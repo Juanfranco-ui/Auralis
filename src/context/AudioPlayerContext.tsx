@@ -324,8 +324,13 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
       setIsLoading(true);
 
       let targetBook = book;
-      // If sections aren't loaded or incomplete, fetch full detail
-      if (!targetBook.sections || targetBook.sections.length === 0) {
+      // If sections aren't loaded, empty, or missing listen_urls, fetch full detail
+      const hasValidSections =
+        targetBook.sections &&
+        targetBook.sections.length > 0 &&
+        targetBook.sections.some((s) => !!s.listen_url);
+
+      if (!hasValidSections) {
         try {
           const fullBook = await fetchBookDetails(book.id, book);
           if (fullBook && fullBook.sections && fullBook.sections.length > 0) {
@@ -349,6 +354,13 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
       if (!audio) {
         setIsLoading(false);
         return;
+      }
+
+      // Stop any previously playing track cleanly before loading new audio
+      try {
+        audio.pause();
+      } catch {
+        // ignore
       }
 
       if (!targetSection?.listen_url) {
