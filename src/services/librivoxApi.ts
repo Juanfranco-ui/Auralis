@@ -1,4 +1,4 @@
-import { Book, SearchFilters } from '../types/audiobook';
+import { Book, SearchFilters, Section } from '../types/audiobook';
 
 // Clean text helper to strip any residual HTML markup safely
 export function stripHtml(html: string = ''): string {
@@ -53,6 +53,12 @@ export function getBookCover(book: Book): string {
   if (book.coverart_thumbnail) return book.coverart_thumbnail;
   if (book.identifier) return `https://archive.org/services/img/${book.identifier}`;
   return '';
+}
+
+// Ensure audio stream URLs use https:// to prevent Mixed Content blocking on HTTPS deployments
+export function normalizeAudioUrl(url: string = ''): string {
+  if (!url) return '';
+  return url.replace(/^http:\/\//i, 'https://');
 }
 
 export const CURATED_FEATURED_BOOKS: Book[] = [
@@ -168,18 +174,109 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
   },
 ];
 
+// Helper: resolve chapters directly from Internet Archive metadata API (CORS enabled)
+async function fetchChaptersFromArchive(identifier: string, existingBook?: Partial<Book>): Promise<Book | null> {
+  try {
+    const metaResp = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
+    if (!metaResp.ok) return null;
+
+    const meta = await metaResp.json();
+    const files: any[] = meta.files || [];
+    const metadata = meta.metadata || {};
+
+    const mp3Files = files.filter(
+      (f: any) =>
+        f.name &&
+        f.name.endsWith('.mp3') &&
+        !f.name.includes('_sample') &&
+        (f.format?.includes('MP3') || f.format === 'VBR MP3' || f.format === '64Kbps MP3')
+    );
+
+    if (mp3Files.length === 0) return null;
+
+    const trackMap = new Map<string, any>();
+    for (const f of mp3Files) {
+      const baseKey = f.track || f.title || f.name.replace(/_64kb\.mp3$/, '').replace(/\.mp3$/, '');
+      if (!trackMap.has(baseKey) || f.format === '64Kbps MP3') {
+        trackMap.set(baseKey, f);
+      }
+    }
+
+    const selectedFiles = Array.from(trackMap.values());
+    selectedFiles.sort((a, b) => {
+      const trackA = parseInt(a.track || '0', 10);
+      const trackB = parseInt(b.track || '0', 10);
+      if (trackA && trackB) return trackA - trackB;
+      return a.name.localeCompare(b.name, undefined, { numeric: true });
+    });
+
+    const sections: Section[] = selectedFiles.map((f: any, idx: number) => {
+      let playtime = 0;
+      if (f.length) {
+        if (typeof f.length === 'string' && f.length.includes(':')) {
+          const parts = f.length.split(':').map(Number);
+          playtime = parts.length === 2 ? parts[0] * 60 + parts[1] : parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else {
+          playtime = Math.round(parseFloat(f.length) || 0);
+        }
+      }
+
+      return {
+        id: `${identifier}_sec_${idx + 1}`,
+        section_number: String(idx + 1),
+        title: stripHtml(f.title || `Capítulo ${idx + 1}`),
+        listen_url: `https://archive.org/download/${identifier}/${encodeURIComponent(f.name)}`,
+        playtime: String(playtime),
+        file_name: f.name,
+        readers: f.artist ? [{ reader_id: '1', display_name: f.artist }] : undefined,
+      };
+    });
+
+    const creator = metadata.creator || (existingBook?.authors ? getAuthorName(existingBook as Book) : 'Dominio Público');
+    const authorParts = String(creator).split(' ');
+    const lastName = authorParts.pop() || creator;
+    const firstName = authorParts.join(' ');
+
+    const totalSecs = sections.reduce((acc, s) => acc + (parseInt(String(s.playtime), 10) || 0), 0);
+    const hours = Math.floor(totalSecs / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+
+    return {
+      id: existingBook?.id || `ia_${identifier}`,
+      identifier,
+      title: existingBook?.title || metadata.title || identifier,
+      description: stripHtml(existingBook?.description || metadata.description || ''),
+      language: existingBook?.language || metadata.language || 'Español',
+      copyright_year: existingBook?.copyright_year || metadata.year || metadata.date?.slice(0, 4),
+      num_sections: sections.length,
+      totaltime: hours > 0 ? `${hours}h ${mins}m` : `${mins}m`,
+      totaltimesecs: totalSecs,
+      authors: existingBook?.authors && existingBook.authors.length > 0
+        ? existingBook.authors
+        : [{ first_name: firstName, last_name: lastName }],
+      coverart_jpg: existingBook?.coverart_jpg || `https://archive.org/services/img/${identifier}`,
+      coverart_thumbnail: existingBook?.coverart_thumbnail || `https://archive.org/services/img/${identifier}`,
+      sections,
+    };
+  } catch (err) {
+    console.warn(`Archive metadata resolution failed for ${identifier}:`, err);
+    return null;
+  }
+}
+
 // 1. Fetch Featured Books
 export async function fetchFeaturedBooks(): Promise<Book[]> {
   try {
     const res = await fetch('/api/featured');
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         return data;
       }
     }
   } catch (err) {
-    console.warn('Failed to load featured from /api/featured, using static curated fallback:', err);
+    console.warn('Backend /api/featured unavailable, using curated books:', err);
   }
 
   // Standalone / Netlify client-side fallback
@@ -207,10 +304,14 @@ export async function fetchAudiobooksFeed(
 
   try {
     const res = await fetch(`/api/feed/audiobooks?${params.toString()}`);
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
       if (Array.isArray(data.books)) {
-        return data.books;
+        return data.books.map((b: any) => ({
+          ...b,
+          description: stripHtml(b.description || ''),
+        }));
       }
     }
   } catch (err) {
@@ -220,7 +321,7 @@ export async function fetchAudiobooksFeed(
   return [];
 }
 
-// 3. Search Audiobooks (smart multi-provider endpoint)
+// 3. Search Audiobooks (hybrid multi-source search)
 export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> {
   const q = filters.query.trim();
   if (!q) return [];
@@ -232,19 +333,98 @@ export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> 
     limit: '30',
   });
 
+  // Try backend search endpoint first if available (Node/Express runtime)
   try {
     const res = await fetch(`/api/search?${params.toString()}`);
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
-      if (Array.isArray(data.books)) {
+      if (Array.isArray(data.books) && data.books.length > 0) {
         return data.books;
       }
     }
-  } catch (err) {
-    console.error('Search request failed:', err);
+  } catch {
+    // Proceed to client multi-search
   }
 
-  // Fallback direct to Internet Archive if server is unreachable
+  const results: Book[] = [];
+  const seenIds = new Set<string>();
+
+  // Strategy A: Query LibriVox feed via proxied /api/feed/audiobooks
+  try {
+    const lvParams = new URLSearchParams({
+      format: 'json',
+      coverart: '1',
+      limit: '25',
+    });
+
+    if (filters.searchType === 'author') {
+      lvParams.set('author', q);
+    } else if (filters.searchType === 'title') {
+      lvParams.set('title', `^${q}`);
+    } else {
+      lvParams.set('title', `^${q}`);
+    }
+
+    const lvRes = await fetch(`/api/feed/audiobooks?${lvParams.toString()}`);
+    const lvContentType = lvRes.headers.get('content-type') || '';
+    if (lvRes.ok && lvContentType.includes('application/json')) {
+      const data = await lvRes.json();
+      if (Array.isArray(data.books)) {
+        for (const b of data.books) {
+          if (
+            filters.language !== 'all' &&
+            b.language &&
+            !b.language.toLowerCase().includes(filters.language.toLowerCase())
+          ) {
+            continue;
+          }
+          const id = String(b.id);
+          if (!seenIds.has(id)) {
+            seenIds.add(id);
+            results.push({
+              ...b,
+              description: stripHtml(b.description || ''),
+            });
+          }
+        }
+      }
+    }
+
+    // If general search and few results, also try author query on LibriVox
+    if (filters.searchType === 'all' && results.length < 5) {
+      const authorRes = await fetch(
+        `/api/feed/audiobooks?format=json&coverart=1&limit=15&author=${encodeURIComponent(q)}`
+      );
+      const authContentType = authorRes.headers.get('content-type') || '';
+      if (authorRes.ok && authContentType.includes('application/json')) {
+        const authData = await authorRes.json();
+        if (Array.isArray(authData.books)) {
+          for (const b of authData.books) {
+            if (
+              filters.language !== 'all' &&
+              b.language &&
+              !b.language.toLowerCase().includes(filters.language.toLowerCase())
+            ) {
+              continue;
+            }
+            const id = String(b.id);
+            if (!seenIds.has(id)) {
+              seenIds.add(id);
+              results.push({
+                ...b,
+                description: stripHtml(b.description || ''),
+              });
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('LibriVox feed search failed, relying on Archive:', e);
+  }
+
+  // Strategy B: Internet Archive LibriVox Collection Full-Text Search (Universal CORS)
   try {
     let iaQuery = `collection:(librivoxaudio) AND (${q})`;
     if (filters.language === 'Spanish') {
@@ -255,134 +435,156 @@ export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> 
 
     const iaUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(
       iaQuery
-    )}&fl[]=identifier,title,creator,description,year,downloads&sort[]=downloads+desc&rows=20&output=json`;
+    )}&fl[]=identifier,title,creator,description,year,downloads&sort[]=downloads+desc&rows=25&output=json`;
 
     const res = await fetch(iaUrl);
     if (res.ok) {
       const iaData = await res.json();
       const docs = iaData?.response?.docs || [];
-      return docs.map((doc: any) => ({
-        id: `ia_${doc.identifier}`,
-        identifier: doc.identifier,
-        title: doc.title || 'Audiolibro',
-        description: stripHtml(doc.description || ''),
-        language: filters.language === 'Spanish' ? 'Spanish' : 'Multilingual',
-        copyright_year: doc.year ? String(doc.year) : undefined,
-        num_sections: 1,
-        authors: [
-          {
-            first_name: '',
-            last_name: doc.creator || 'Autor Clásico',
-          },
-        ],
-        coverart_jpg: `https://archive.org/services/img/${doc.identifier}`,
-        coverart_thumbnail: `https://archive.org/services/img/${doc.identifier}`,
-      }));
+      for (const doc of docs) {
+        const id = `ia_${doc.identifier}`;
+        if (!seenIds.has(id) && !seenIds.has(doc.identifier)) {
+          seenIds.add(id);
+          results.push({
+            id,
+            identifier: doc.identifier,
+            title: doc.title || 'Audiolibro',
+            description: stripHtml(doc.description || ''),
+            language: filters.language === 'Spanish' ? 'Spanish' : 'Multilingual',
+            copyright_year: doc.year ? String(doc.year) : undefined,
+            num_sections: 1,
+            authors: [
+              {
+                first_name: '',
+                last_name: doc.creator || 'Autor Clásico',
+              },
+            ],
+            coverart_jpg: `https://archive.org/services/img/${doc.identifier}`,
+            coverart_thumbnail: `https://archive.org/services/img/${doc.identifier}`,
+          });
+        }
+      }
     }
   } catch (fallbackErr) {
     console.error('Archive search fallback failed:', fallbackErr);
   }
 
-  return [];
+  return results;
 }
 
 // 4. Fetch Full Book Details with Sections / Chapters
-export async function fetchBookDetails(bookId: string): Promise<Book | null> {
-  try {
-    const res = await fetch(`/api/book/${encodeURIComponent(bookId)}`);
-    if (res.ok) {
-      const book = await res.json();
-      if (book && (book.id || book.title)) {
-        return book;
-      }
-    }
-  } catch (err) {
-    console.warn(`Error fetching /api/book/${bookId}, trying direct Archive fallback:`, err);
-  }
-
-  // Direct Archive.org fallback (works 100% on static Netlify with CORS)
-  try {
-    const identifier = bookId.replace(/^ia_/, '');
-    const metaResp = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
-    if (metaResp.ok) {
-      const meta = await metaResp.json();
-      const files: any[] = meta.files || [];
-      const metadata = meta.metadata || {};
-
-      const mp3Files = files.filter(
-        (f: any) =>
-          f.name &&
-          f.name.endsWith('.mp3') &&
-          !f.name.includes('_sample') &&
-          (f.format?.includes('MP3') || f.format === 'VBR MP3' || f.format === '64Kbps MP3')
-      );
-
-      const trackMap = new Map<string, any>();
-      for (const f of mp3Files) {
-        const baseKey = f.track || f.title || f.name.replace(/_64kb\.mp3$/, '').replace(/\.mp3$/, '');
-        if (!trackMap.has(baseKey) || f.format === '64Kbps MP3') {
-          trackMap.set(baseKey, f);
-        }
-      }
-
-      const selectedFiles = Array.from(trackMap.values());
-      selectedFiles.sort((a, b) => {
-        const trackA = parseInt(a.track || '0', 10);
-        const trackB = parseInt(b.track || '0', 10);
-        if (trackA && trackB) return trackA - trackB;
-        return a.name.localeCompare(b.name, undefined, { numeric: true });
-      });
-
-      const sections = selectedFiles.map((f: any, idx: number) => {
-        let playtime = 0;
-        if (f.length) {
-          if (typeof f.length === 'string' && f.length.includes(':')) {
-            const parts = f.length.split(':').map(Number);
-            playtime = parts.length === 2 ? parts[0] * 60 + parts[1] : parts[0] * 3600 + parts[1] * 60 + parts[2];
-          } else {
-            playtime = Math.round(parseFloat(f.length) || 0);
-          }
-        }
-
-        return {
-          id: `${identifier}_sec_${idx + 1}`,
-          section_number: String(idx + 1),
-          title: stripHtml(f.title || `Capítulo ${idx + 1}`),
-          listen_url: `https://archive.org/download/${identifier}/${encodeURIComponent(f.name)}`,
-          playtime: String(playtime),
-          file_name: f.name,
-          readers: f.artist ? [{ reader_id: '1', display_name: f.artist }] : undefined,
-        };
-      });
-
-      const creator = metadata.creator || 'Dominio Público';
-      const authorParts = String(creator).split(' ');
-      const lastName = authorParts.pop() || creator;
-      const firstName = authorParts.join(' ');
-
-      const totalSecs = sections.reduce((acc, s) => acc + (parseInt(String(s.playtime), 10) || 0), 0);
-      const hours = Math.floor(totalSecs / 3600);
-      const mins = Math.floor((totalSecs % 3600) / 60);
-
+// Handles numeric LibriVox IDs, Internet Archive identifiers, and already loaded books
+export async function fetchBookDetails(bookId: string, currentBook?: Book): Promise<Book | null> {
+  // If the book already has populated sections with valid listen_urls, normalize and return it
+  if (currentBook?.sections && currentBook.sections.length > 0) {
+    const validSections = currentBook.sections.filter((s) => !!s.listen_url);
+    if (validSections.length > 0) {
       return {
-        id: bookId,
-        identifier,
-        title: metadata.title || identifier,
-        description: stripHtml(metadata.description || ''),
-        language: metadata.language || 'Español',
-        copyright_year: metadata.year || metadata.date?.slice(0, 4),
-        num_sections: sections.length,
-        totaltime: hours > 0 ? `${hours}h ${mins}m` : `${mins}m`,
-        totaltimesecs: totalSecs,
-        authors: [{ first_name: firstName, last_name: lastName }],
-        coverart_jpg: `https://archive.org/services/img/${identifier}`,
-        coverart_thumbnail: `https://archive.org/services/img/${identifier}`,
-        sections,
+        ...currentBook,
+        sections: currentBook.sections.map((s) => ({
+          ...s,
+          listen_url: normalizeAudioUrl(s.listen_url),
+        })),
       };
     }
-  } catch (archiveErr) {
-    console.error('Archive metadata fallback failed:', archiveErr);
   }
 
-  return null;
+  // 1. Try full-stack backend endpoint if available (only if it returns real JSON)
+  try {
+    const res = await fetch(`/api/book/${encodeURIComponent(bookId)}`);
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const book = await res.json();
+      if (book && Array.isArray(book.sections) && book.sections.length > 0) {
+        return {
+          ...book,
+          sections: book.sections.map((s: any) => ({
+            ...s,
+            listen_url: normalizeAudioUrl(s.listen_url),
+          })),
+        };
+      }
+    }
+  } catch {
+    // Backend endpoint not available (e.g. static Netlify SPA), proceed to client resolvers
+  }
+
+  // 2. If it is an Internet Archive item (has ia_ prefix, identifier, or non-numeric id)
+  const isNumeric = /^\d+$/.test(bookId);
+  const iaIdentifier = currentBook?.identifier || (bookId.startsWith('ia_') ? bookId.replace(/^ia_/, '') : !isNumeric ? bookId : null);
+
+  if (iaIdentifier) {
+    const archiveBook = await fetchChaptersFromArchive(iaIdentifier, currentBook);
+    if (archiveBook && archiveBook.sections && archiveBook.sections.length > 0) {
+      return archiveBook;
+    }
+  }
+
+  // 3. For numeric LibriVox IDs: query /api/feed/audiobooks?id=... (proxied by Netlify with extended=1)
+  if (isNumeric) {
+    try {
+      const feedUrl = `/api/feed/audiobooks?id=${encodeURIComponent(bookId)}&format=json&extended=1&coverart=1`;
+      const res = await fetch(feedUrl);
+      const contentType = res.headers.get('content-type') || '';
+
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        const book = data?.books?.[0];
+
+        if (book) {
+          // Normalize sections and ensure HTTPS on every listen_url
+          const rawSections: any[] = Array.isArray(book.sections) ? book.sections : [];
+          const sections: Section[] = rawSections
+            .filter((s: any) => !!s.listen_url)
+            .map((s: any, idx: number) => ({
+              id: s.id || `${bookId}_sec_${idx + 1}`,
+              section_number: s.section_number || String(idx + 1),
+              title: stripHtml(s.title || `Capítulo ${idx + 1}`),
+              listen_url: normalizeAudioUrl(s.listen_url),
+              playtime: String(s.playtime || '0'),
+              file_name: s.file_name,
+              readers: s.readers,
+            }));
+
+          // If sections were found, return the enriched book
+          if (sections.length > 0) {
+            // Extract Archive identifier from zip file if available for fallback coverart/metadata
+            const zipMatch = (book.url_zip_file || '').match(/\/download\/([^/]+)/);
+            const archiveId = zipMatch ? zipMatch[1] : undefined;
+
+            return {
+              ...book,
+              identifier: archiveId || book.identifier,
+              description: stripHtml(book.description || ''),
+              sections,
+            };
+          }
+
+          // If LibriVox returned 0 sections, check if we can resolve via Internet Archive using zip url
+          const zipMatch = (book.url_zip_file || '').match(/\/download\/([^/]+)/);
+          if (zipMatch && zipMatch[1]) {
+            const fallbackBook = await fetchChaptersFromArchive(zipMatch[1], book);
+            if (fallbackBook && fallbackBook.sections && fallbackBook.sections.length > 0) {
+              return fallbackBook;
+            }
+          }
+        }
+      }
+    } catch (lvErr) {
+      console.warn(`Direct LibriVox feed fetch failed for ID ${bookId}:`, lvErr);
+    }
+  }
+
+  // 4. Final attempt: Check if currentBook has a zip file link or archive reference
+  if (currentBook?.url_zip_file) {
+    const zipMatch = currentBook.url_zip_file.match(/\/download\/([^/]+)/);
+    if (zipMatch && zipMatch[1]) {
+      const archiveBook = await fetchChaptersFromArchive(zipMatch[1], currentBook);
+      if (archiveBook && archiveBook.sections && archiveBook.sections.length > 0) {
+        return archiveBook;
+      }
+    }
+  }
+
+  return currentBook || null;
 }

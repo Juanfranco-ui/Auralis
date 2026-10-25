@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#español">Español</a> &middot; <a href="#english">English</a> &middot; <a href="#deploy-on-netlify">Netlify Deploy</a>
+  <a href="#español">Español</a> &middot; <a href="#english">English</a>
 </p>
 
 ---
@@ -73,17 +73,6 @@ npm run build    # Builds client bundle into dist/
 ```
 
 ---
-
-<a id="deploy-on-netlify"></a>
-## Despliegue en Netlify / Netlify Deployment
-
-Configuración lista en `netlify.toml` y `public/_redirects`:
-
-1. Conecta tu repositorio en [Netlify](https://app.netlify.com/) (`Juanfranco-ui/Auralis`).
-2. Configuración de compilación:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `dist`
-3. Haz clic en **Deploy**. El enrutamiento SPA (`/* -> /index.html`) y las llamadas a la API funcionarán automáticamente.
 
 ---
 

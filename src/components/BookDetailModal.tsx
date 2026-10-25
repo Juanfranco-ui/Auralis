@@ -54,7 +54,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose 
 
     if (!book.sections || book.sections.length === 0) {
       setLoadingSections(true);
-      fetchBookDetails(book.id)
+      fetchBookDetails(book.id, book)
         .then((detail) => {
           if (detail) {
             setFullBook(detail);

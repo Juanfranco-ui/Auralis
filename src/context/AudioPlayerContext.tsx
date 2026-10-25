@@ -327,7 +327,7 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
       // If sections aren't loaded or incomplete, fetch full detail
       if (!targetBook.sections || targetBook.sections.length === 0) {
         try {
-          const fullBook = await fetchBookDetails(book.id);
+          const fullBook = await fetchBookDetails(book.id, book);
           if (fullBook && fullBook.sections && fullBook.sections.length > 0) {
             targetBook = fullBook;
           }
