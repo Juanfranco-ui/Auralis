@@ -1,0 +1,6 @@
+{
+  "name": "LibriVox Audiolibros",
+  "description": "Escucha miles de audiolibros gratis en español e inglés directamente desde LibriVox e Internet Archive. Reproductor de audio con capítulos, velocidad, temporizador y marcadores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --color-coral: #FF9398;
+  --color-coral-deep: #E86B72;
+  --color-cream: #F3EFE6;
+  --color-paper: #FAF7F2;
+  --color-ink: #101010;
+}
+
+:root {
+  --coral: #FF9398;
+  --coral-deep: #E86B72;
+  --cream: #F3EFE6;
+  --paper: #FAF7F2;
+  --ink: #101010;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #0c0a09;
+  color: #f5f5f4;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans, .font-grot {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--coral);
+  color: #101010;
+}
+
+/* Film grain overlay (flat, css-only, from Awwwards-mcp fallow-press) */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Editorial caps labels */
+.caps-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.h-caps {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Editorial pill button with sliding arrow */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.pill-btn .arr {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.pill-btn:hover .arr {
+  transform: translateX(4px);
+}
+
+.pill-btn.coral {
+  background: var(--coral);
+  color: #101010;
+  border-color: var(--coral);
+}
+
+.pill-btn.coral:hover {
+  background: #ffffff;
+  color: #101010;
+  border-color: #ffffff;
+}
+
+.pill-btn.outline {
+  background: transparent;
+  color: #f5f5f4;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.pill-btn.outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Brand display wordmark */
+.brand-editorial {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.brand-editorial em {
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brand-editorial span {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+
+/* Custom styling for audio scrubbers and volume */
+input[type="range"] {
+  accent-color: #FF9398;
+}
+
+/* Smooth dark scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0a09;
+}
+::-webkit-scrollbar-thumb {
+  background: #292524;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #44403c;
+}
