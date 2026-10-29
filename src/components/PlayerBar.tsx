@@ -13,7 +13,6 @@ import {
   BookmarkPlus,
   Loader2,
   AlertCircle,
-  Disc3,
 } from 'lucide-react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import {
@@ -77,16 +76,19 @@ export const PlayerBar: React.FC = () => {
   const speedOptions = [0.75, 1, 1.25, 1.5, 1.75, 2];
   const sleepOptions: { label: string; value: SleepTimerOption }[] = [
     { label: 'Desactivado', value: 0 },
-    { label: '5 minutos', value: 5 },
-    { label: '15 minutos', value: 15 },
-    { label: '30 minutos', value: 30 },
-    { label: '45 minutos', value: 45 },
-    { label: '60 minutos', value: 60 },
+    { label: '5 min', value: 5 },
+    { label: '15 min', value: 15 },
+    { label: '30 min', value: 30 },
+    { label: '45 min', value: 45 },
+    { label: '60 min', value: 60 },
     { label: 'Fin de capítulo', value: 'end_of_chapter' },
   ];
 
   return (
-    <aside aria-label="Reproductor de audio" className="fixed bottom-0 inset-x-0 z-40 bg-[#0c0a09]/95 backdrop-blur-xl border-t border-stone-800 text-stone-100 shadow-2xl transition-all">
+    <aside
+      aria-label="Reproductor de audio"
+      className="fixed bottom-0 inset-x-0 z-40 bg-[#0c0a09]/95 backdrop-blur-xl border-t border-stone-800 text-stone-100 shadow-2xl transition-all"
+    >
       {/* Top coral micro progress line */}
       <div className="w-full h-[2px] bg-stone-900">
         <div
@@ -100,23 +102,23 @@ export const PlayerBar: React.FC = () => {
         <div className="bg-rose-950/90 text-rose-200 text-xs px-4 py-1.5 flex items-center justify-between border-b border-rose-900 font-mono">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-            <span>{error}</span>
+            <span className="truncate">{error}</span>
           </div>
           <button
             onClick={() => togglePlayPause()}
-            className="underline hover:text-white font-medium ml-4 cursor-pointer"
+            className="underline hover:text-white font-medium ml-4 shrink-0 cursor-pointer"
           >
             Reintentar
           </button>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Book & Chapter metadata */}
-        <div className="flex items-center gap-3.5 min-w-0 max-w-[28%] sm:max-w-[26%]">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 max-w-[42%] sm:max-w-[28%]">
           <div
             onClick={() => setIsExpanded(true)}
-            className="w-12 h-12 bg-stone-900 rounded-lg overflow-hidden shrink-0 border border-stone-800 cursor-pointer shadow-md group relative"
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-stone-900 rounded-lg overflow-hidden shrink-0 border border-stone-800 cursor-pointer shadow-md group relative"
           >
             {coverUrl ? (
               <img
@@ -126,25 +128,28 @@ export const PlayerBar: React.FC = () => {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#FF9398]/60 font-serif text-xs">
+              <div className="w-full h-full flex items-center justify-center text-[#FF9398]/60 font-serif text-[10px] sm:text-xs">
                 Audio
               </div>
             )}
             <div className="absolute inset-0 bg-stone-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-              <Maximize2 className="w-3.5 h-3.5 text-white" />
+              <Maximize2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
             </div>
           </div>
 
           <div className="min-w-0">
             <h4
               onClick={() => openBookDetail(currentBook)}
-              className="text-sm font-serif font-medium text-stone-100 truncate hover:text-[#FF9398] cursor-pointer transition-colors"
+              className="text-xs sm:text-sm font-serif font-medium text-stone-100 truncate hover:text-[#FF9398] cursor-pointer transition-colors leading-tight"
               title={currentBook.title}
             >
               {currentBook.title}
             </h4>
-            <p className="text-xs text-stone-400 font-light truncate">{authorName}</p>
-            <div className="flex items-center gap-1.5 text-[10px] text-[#FF9398] truncate font-mono mt-0.5">
+            <p className="text-[11px] sm:text-xs text-stone-400 font-light truncate mt-0.5">
+              {authorName}
+            </p>
+            {/* Desktop track detail */}
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-[#FF9398] truncate font-mono mt-0.5">
               <span>Pista {currentSectionIndex + 1}/{totalSections}</span>
               <span aria-hidden="true">&middot;</span>
               <span className="truncate">{sectionTitle}</span>
@@ -153,14 +158,14 @@ export const PlayerBar: React.FC = () => {
         </div>
 
         {/* Center: Playback Controls & Scrubber */}
-        <div className="flex-1 max-w-2xl flex flex-col items-center gap-1.5">
-          {/* Main buttons */}
+        <div className="flex-1 max-w-2xl flex flex-col items-center gap-1">
+          {/* Main buttons - on mobile ONLY -15s, Play/Pause, and +15s (prev/next chapter hidden on mobile) */}
           <div className="flex items-center gap-2 sm:gap-5">
-            {/* Prev Chapter */}
+            {/* Prev Chapter: HIDDEN on mobile for minimalist footprint */}
             <button
               onClick={prevChapter}
               disabled={currentSectionIndex === 0 && currentTime <= 4}
-              className="p-1.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="hidden sm:inline-flex p-1.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Capítulo anterior"
             >
               <SkipBack className="w-4 h-4" />
@@ -172,25 +177,25 @@ export const PlayerBar: React.FC = () => {
               className="p-1.5 text-stone-400 hover:text-stone-100 transition-colors flex items-center justify-center relative group cursor-pointer"
               title="Retroceder 15 segundos"
             >
-              <RotateCcw className="w-4 h-4" />
-              <span className="absolute -bottom-2 text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
+              <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="absolute -bottom-1.5 sm:-bottom-2 text-[8px] sm:text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
                 15
               </span>
             </button>
 
-            {/* Main Play / Pause (Awwwards circular action) */}
+            {/* Main Play / Pause */}
             <button
               onClick={togglePlayPause}
               disabled={isLoading}
-              className="w-10 h-10 rounded-full bg-[#FF9398] hover:bg-white text-stone-950 flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-80"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FF9398] hover:bg-white text-stone-950 flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-80"
               title={isPlaying ? 'Pausar' : 'Reproducir'}
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               ) : isPlaying ? (
-                <Pause className="w-5 h-5 fill-current" />
+                <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
               ) : (
-                <Play className="w-5 h-5 fill-current translate-x-0.5" />
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current translate-x-0.5" />
               )}
             </button>
 
@@ -200,20 +205,20 @@ export const PlayerBar: React.FC = () => {
               className="p-1.5 text-stone-400 hover:text-stone-100 transition-colors flex items-center justify-center relative group cursor-pointer"
               title="Adelantar 15 segundos"
             >
-              <RotateCw className="w-4 h-4" />
-              <span className="absolute -bottom-2 text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
+              <RotateCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="absolute -bottom-1.5 sm:-bottom-2 text-[8px] sm:text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
                 15
               </span>
             </button>
 
-            {/* Next Chapter */}
+            {/* Next Chapter: HIDDEN on mobile for minimalist footprint */}
             <button
               onClick={nextChapter}
               disabled={
                 !currentBook.sections ||
                 currentSectionIndex >= currentBook.sections.length - 1
               }
-              className="p-1.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="hidden sm:inline-flex p-1.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Siguiente capítulo"
             >
               <SkipForward className="w-4 h-4" />
@@ -221,8 +226,8 @@ export const PlayerBar: React.FC = () => {
           </div>
 
           {/* Scrubber slider bar */}
-          <div className="w-full flex items-center gap-3 text-[11px] font-mono text-stone-400">
-            <span className="tabular-nums w-10 text-right">
+          <div className="w-full flex items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-mono text-stone-400">
+            <span className="tabular-nums w-8 sm:w-10 text-right">
               {formatPlayerTime(currentTime)}
             </span>
 
@@ -233,11 +238,11 @@ export const PlayerBar: React.FC = () => {
               step={1}
               value={currentTime}
               onChange={(e) => seekTo(Number(e.target.value))}
-              className="w-full h-1.5 bg-stone-900 rounded-lg appearance-none cursor-pointer focus:outline-none"
-              title="Arrastra para avanzar o retroceder"
+              className="w-full h-1 sm:h-1.5 bg-stone-900 rounded-lg appearance-none cursor-pointer focus:outline-none"
+              aria-label="Posición de reproducción"
             />
 
-            <span className="tabular-nums w-10 text-left">
+            <span className="tabular-nums w-8 sm:w-10 text-left">
               {duration > 0
                 ? `-${formatPlayerTime(Math.max(0, duration - currentTime))}`
                 : formatPlayerTime(duration)}
@@ -246,7 +251,7 @@ export const PlayerBar: React.FC = () => {
         </div>
 
         {/* Right: Speed, Sleep Timer, Volume, Fullscreen */}
-        <div className="flex items-center gap-1 sm:gap-3 text-stone-400">
+        <div className="flex items-center gap-1 sm:gap-3 text-stone-400 shrink-0">
           {/* Speed button & menu */}
           <div className="relative">
             <button
@@ -254,8 +259,8 @@ export const PlayerBar: React.FC = () => {
                 setShowSpeedMenu(!showSpeedMenu);
                 setShowSleepMenu(false);
               }}
-              className="px-2 py-1 text-xs font-mono rounded hover:bg-stone-900 hover:text-stone-100 transition-colors cursor-pointer"
-              title="Velocidad de reproducción"
+              className="px-1.5 sm:px-2 py-1 text-[11px] sm:text-xs font-mono rounded hover:bg-stone-900 hover:text-stone-100 transition-colors cursor-pointer"
+              title="Velocidad"
             >
               {playbackRate}x
             </button>
@@ -296,9 +301,9 @@ export const PlayerBar: React.FC = () => {
               }`}
               title="Temporizador de apagado"
             >
-              <Moon className="w-4 h-4" />
+              <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               {sleepTimerSeconds !== null && sleepTimerSeconds > 0 && (
-                <span className="absolute -top-1 -right-2 px-1 text-[9px] font-mono bg-[#FF9398] text-stone-950 rounded-full font-bold">
+                <span className="absolute -top-1 -right-2 px-1 text-[8px] sm:text-[9px] font-mono bg-[#FF9398] text-stone-950 rounded-full font-bold">
                   {Math.ceil(sleepTimerSeconds / 60)}m
                 </span>
               )}
@@ -329,21 +334,21 @@ export const PlayerBar: React.FC = () => {
             )}
           </div>
 
-          {/* Quick Bookmark button */}
+          {/* Quick Bookmark button - hidden on small mobile for maximum minimal footprint */}
           <button
             onClick={handleBookmarkClick}
-            className="p-1.5 rounded-lg hover:text-stone-100 hover:bg-stone-900 transition-colors relative cursor-pointer"
-            title="Guardar marcador en este segundo"
+            className="hidden sm:inline-flex p-1.5 rounded-lg hover:text-stone-100 hover:bg-stone-900 transition-colors relative cursor-pointer"
+            title="Guardar marcador"
           >
             <BookmarkPlus className="w-4 h-4" />
             {showBookmarkSuccess && (
-              <span className="absolute -top-7 -left-12 px-2 py-0.5 bg-[#FF9398] text-stone-950 text-[10px] rounded font-medium shadow-md whitespace-nowrap font-mono animate-fade-in">
+              <span className="absolute -top-7 -left-12 px-2 py-0.5 bg-[#FF9398] text-stone-950 text-[10px] rounded font-medium shadow-md whitespace-nowrap font-mono">
                 &iexcl;Nota guardada!
               </span>
             )}
           </button>
 
-          {/* Volume Control */}
+          {/* Volume Control - desktop only */}
           <div className="hidden md:flex items-center gap-1.5">
             <button
               onClick={toggleMute}
@@ -364,7 +369,7 @@ export const PlayerBar: React.FC = () => {
               value={isMuted ? 0 : volume}
               onChange={(e) => setAudioVolume(Number(e.target.value))}
               className="w-16 h-1 bg-stone-900 rounded-lg appearance-none cursor-pointer focus:outline-none"
-              title="Volumen"
+              aria-label="Volumen"
             />
           </div>
 
@@ -374,7 +379,7 @@ export const PlayerBar: React.FC = () => {
             className="p-1.5 rounded-lg hover:text-stone-100 hover:bg-stone-900 transition-colors cursor-pointer"
             title="Expandir reproductor completo"
           >
-            <Maximize2 className="w-4 h-4" />
+            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

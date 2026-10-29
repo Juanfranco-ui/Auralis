@@ -89,9 +89,14 @@ export const IDENTIFIER_ALIASES: Record<string, string> = {
   'ia_timemachine_version2_librivox': 'time_machine_0805_librivox',
   'novelas_ejemplares_1407_librivox': 'novelas_ejemplares_1110_librivox',
   'ia_novelas_ejemplares_1407_librivox': 'novelas_ejemplares_1110_librivox',
+  '271': 'dracula_librivox',
+  '314': 'adventures_holmes',
+  '47': 'count_monte_cristo_0711_librivox',
+  '100': 'aventurasde_arturogordonpym_1812_librivox',
 };
 
 export const CURATED_FEATURED_BOOKS: Book[] = [
+  // --- SPANISH LITERATURE & CLASSICS ---
   {
     id: 'ia_don_quijote_vol1_0706_librivox',
     identifier: 'don_quijote_vol1_0706_librivox',
@@ -108,6 +113,21 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     category: 'spanish',
   },
   {
+    id: 'ia_cuentosquiroga_1312_librivox',
+    identifier: 'cuentosquiroga_1312_librivox',
+    title: 'Cuentos de Amor de Locura y de Muerte',
+    authors: [{ first_name: 'Horacio', last_name: 'Quiroga' }],
+    language: 'Spanish',
+    num_sections: 18,
+    totaltime: '4h 30m',
+    copyright_year: '1917',
+    description:
+      'La obra cumbre del maestro rioplatense del relato breve y de horror psicológico. Incluye piezas maestras como "El almohadón de plumas", "A la deriva", "La gallina degollada" y "Los buques suicidantes".',
+    coverart_jpg: 'https://archive.org/services/img/cuentosquiroga_1312_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/cuentosquiroga_1312_librivox',
+    category: 'tales',
+  },
+  {
     id: 'ia_leyendas_becquer_1208_librivox',
     identifier: 'leyendas_becquer_1208_librivox',
     title: 'Leyendas',
@@ -120,7 +140,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Las leyendas misteriosas, góticas y fantásticas del gran maestro del romanticismo español: El monte de las ánimas, El rayo de luna, Los ojos verdes, Creed en Dios y El Cristo de la calavera.',
     coverart_jpg: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
-    category: 'spanish',
+    category: 'mystery',
   },
   {
     id: 'ia_rimas_1810_librivox',
@@ -135,7 +155,22 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La célebre colección de poemas románticos de Gustavo Adolfo Bécquer. Versos inmortales sobre la creación poética, la ilusión amorosa, el desengaño y el misterio de la soledad.',
     coverart_jpg: 'https://archive.org/services/img/rimas_1810_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/rimas_1810_librivox',
-    category: 'spanish',
+    category: 'poetry',
+  },
+  {
+    id: 'ia_cuentosdelaselva_1603_librivox',
+    identifier: 'cuentosdelaselva_1603_librivox',
+    title: 'Cuentos de la Selva',
+    authors: [{ first_name: 'Horacio', last_name: 'Quiroga' }],
+    language: 'Spanish',
+    num_sections: 8,
+    totaltime: '2h 10m',
+    copyright_year: '1918',
+    description:
+      'Fábulas memorables ambientadas en la selva misionera: La tortuga gigante, Las medias de los flamencos, El paso del Yabebirí, La guerra de los yacarés y La abeja haragana.',
+    coverart_jpg: 'https://archive.org/services/img/cuentosdelaselva_1603_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/cuentosdelaselva_1603_librivox',
+    category: 'tales',
   },
   {
     id: 'ia_lametamorfosis_2101_librivox',
@@ -150,7 +185,37 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Al despertar una mañana tras un sueño intranquilo, Gregorio Samsa se encontró sobre su cama convertido en un monstruoso insecto. Clásico supremo del existencialismo y la alienación humana.',
     coverart_jpg: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
-    category: 'spanish',
+    category: 'classics',
+  },
+  {
+    id: 'ia_novelas_y_cuentos_1711_librivox',
+    identifier: 'novelas_y_cuentos_1711_librivox',
+    title: 'Cuentos de Terror y Misterio',
+    authors: [{ first_name: 'Edgar Allan', last_name: 'Poe' }],
+    language: 'Spanish',
+    num_sections: 21,
+    totaltime: '7h 40m',
+    copyright_year: '1845',
+    description:
+      'Los relatos más escalofriantes de Edgar Allan Poe traducidos al castellano: El gato negro, El corazón delator, El pozo y el péndulo, La caída de la Casa Usher y La máscara de la muerte roja.',
+    coverart_jpg: 'https://archive.org/services/img/novelas_y_cuentos_1711_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/novelas_y_cuentos_1711_librivox',
+    category: 'mystery',
+  },
+  {
+    id: 'ia_aventurasde_arturogordonpym_1812_librivox',
+    identifier: 'aventurasde_arturogordonpym_1812_librivox',
+    title: 'Aventuras de Arturo Gordon Pym',
+    authors: [{ first_name: 'Edgar Allan', last_name: 'Poe' }],
+    language: 'Spanish',
+    num_sections: 27,
+    totaltime: '8h 15m',
+    copyright_year: '1838',
+    description:
+      'La única novela de Edgar Allan Poe: un polizón a bordo del bergantín Grampus vive motines, canibalismo y encuentros con misterios sobrenaturales en los límites helados de la Antártida.',
+    coverart_jpg: 'https://archive.org/services/img/aventurasde_arturogordonpym_1812_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/aventurasde_arturogordonpym_1812_librivox',
+    category: 'adventure',
   },
   {
     id: 'ia_20000leguas_1602_librivox',
@@ -165,6 +230,21 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'El biólogo marino Pierre Aronnax, su sirviente Conseil y el arponero Ned Land viajan a bordo del fabuloso submarino Nautilus capitaneado por el misterioso Capitán Nemo.',
     coverart_jpg: 'https://archive.org/services/img/20000leguas_1602_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/20000leguas_1602_librivox',
+    category: 'adventure',
+  },
+  {
+    id: 'ia_lavueltaalmundoenochentadias_1504_librivox',
+    identifier: 'lavueltaalmundoenochentadias_1504_librivox',
+    title: 'La Vuelta al Mundo en Ochenta Días',
+    authors: [{ first_name: 'Julio', last_name: 'Verne' }],
+    language: 'Spanish',
+    num_sections: 37,
+    totaltime: '8h 50m',
+    copyright_year: '1873',
+    description:
+      'El flemático caballero británico Phileas Fogg y su mayordomo Jean Passepartout emprenden una carrera contra el reloj para circunvalar el planeta tras una audaz apuesta.',
+    coverart_jpg: 'https://archive.org/services/img/lavueltaalmundoenochentadias_1504_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/lavueltaalmundoenochentadias_1504_librivox',
     category: 'adventure',
   },
   {
@@ -255,10 +335,178 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Los cuentos populares europeos inmortalizados por los Hermanos Grimm, narrados con calidez y fidelidad a las tradiciones orales centenarias.',
     coverart_jpg: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
-    category: 'classics',
+    category: 'tales',
   },
   {
-    id: '271',
+    id: 'ia_antologia_de_cuentos_fantasticos_1905_librivox',
+    identifier: 'antologia_de_cuentos_fantasticos_1905_librivox',
+    title: 'Antología de Cuentos Fantásticos',
+    authors: [{ first_name: 'Varios', last_name: 'Autores' }],
+    language: 'Spanish',
+    num_sections: 18,
+    totaltime: '6h 15m',
+    copyright_year: '1905',
+    description:
+      'Selección de relatos sobrenaturales, insólitos y de misterio gótico de destacados escritores de la literatura hispana y universal.',
+    coverart_jpg: 'https://archive.org/services/img/antologia_de_cuentos_fantasticos_1905_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/antologia_de_cuentos_fantasticos_1905_librivox',
+    category: 'mystery',
+  },
+  {
+    id: 'ia_abelsanchez_1904_librivox',
+    identifier: 'abelsanchez_1904_librivox',
+    title: 'Abel Sánchez: Una Historia de Pasión',
+    authors: [{ first_name: 'Miguel de', last_name: 'Unamuno' }],
+    language: 'Spanish',
+    num_sections: 38,
+    totaltime: '5h 40m',
+    copyright_year: '1917',
+    description:
+      'La penetrante exploración unamuniana de la envidia fraternal, el dolor existencial y la psicología humana a través de la tormentosa amistad entre Joaquín Monegro y Abel Sánchez.',
+    coverart_jpg: 'https://archive.org/services/img/abelsanchez_1904_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/abelsanchez_1904_librivox',
+    category: 'spanish',
+  },
+  {
+    id: 'ia_trafalgar_0909_librivox',
+    identifier: 'trafalgar_0909_librivox',
+    title: 'Trafalgar (Episodios Nacionales)',
+    authors: [{ first_name: 'Benito Pérez', last_name: 'Galdós' }],
+    language: 'Spanish',
+    num_sections: 17,
+    totaltime: '4h 50m',
+    copyright_year: '1873',
+    description:
+      'El brillante inicio de los Episodios Nacionales: el joven Gabriel Araceli narra en primera persona la heroica y desgarradora batalla naval del Cabo Trafalgar en 1805.',
+    coverart_jpg: 'https://archive.org/services/img/trafalgar_0909_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/trafalgar_0909_librivox',
+    category: 'adventure',
+  },
+  {
+    id: 'ia_viajesdegulliver_1705_librivox',
+    identifier: 'viajesdegulliver_1705_librivox',
+    title: 'Los Viajes de Gulliver',
+    authors: [{ first_name: 'Jonathan', last_name: 'Swift' }],
+    language: 'Spanish',
+    num_sections: 36,
+    totaltime: '9h 20m',
+    copyright_year: '1726',
+    description:
+      'La afilada y divertida sátira universal de Jonathan Swift en español: Lemuel Gulliver visita las diminutas tierras de Liliput, a los gigantes de Brobdingnag y mundos fantásticos.',
+    coverart_jpg: 'https://archive.org/services/img/viajesdegulliver_1705_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/viajesdegulliver_1705_librivox',
+    category: 'adventure',
+  },
+  {
+    id: 'ia_canasybarro_1703_librivox',
+    identifier: 'canasybarro_1703_librivox',
+    title: 'Cañas y Barro',
+    authors: [{ first_name: 'Vicente Blasco', last_name: 'Ibáñez' }],
+    language: 'Spanish',
+    num_sections: 10,
+    totaltime: '8h 10m',
+    copyright_year: '1902',
+    description:
+      'La obra cumbre del naturalismo valenciano: la lucha por la tierra, las pasiones prohibidas y el destino campesino en los paisajes salvajes de La Albufera.',
+    coverart_jpg: 'https://archive.org/services/img/canasybarro_1703_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/canasybarro_1703_librivox',
+    category: 'spanish',
+  },
+  {
+    id: 'ia_condenada_1107_librivox',
+    identifier: 'condenada_1107_librivox',
+    title: 'La Condenada y Otros Cuentos',
+    authors: [{ first_name: 'Vicente Blasco', last_name: 'Ibáñez' }],
+    language: 'Spanish',
+    num_sections: 14,
+    totaltime: '4h 05m',
+    copyright_year: '1900',
+    description:
+      'Relatos vibrantes y trágicos sobre las gentes humildes, el mar y la huerta española, narrados con la inigualable potencia plástica de Blasco Ibáñez.',
+    coverart_jpg: 'https://archive.org/services/img/condenada_1107_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/condenada_1107_librivox',
+    category: 'tales',
+  },
+  {
+    id: 'ia_edad_de_oro_1001_librivox',
+    identifier: 'edad_de_oro_1001_librivox',
+    title: 'La Edad de Oro',
+    authors: [{ first_name: 'José', last_name: 'Martí' }],
+    language: 'Spanish',
+    num_sections: 16,
+    totaltime: '5h 15m',
+    copyright_year: '1889',
+    description:
+      'La emblemática obra de José Martí dedicada a los niños y jóvenes de América. Textos de bondad, pensamiento crítico, historia y fábulas poéticas inmortales.',
+    coverart_jpg: 'https://archive.org/services/img/edad_de_oro_1001_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/edad_de_oro_1001_librivox',
+    category: 'tales',
+  },
+  {
+    id: 'ia_capitan_veneno_1002_librivox',
+    identifier: 'capitan_veneno_1002_librivox',
+    title: 'El Capitán Veneno',
+    authors: [{ first_name: 'Pedro Antonio de', last_name: 'Alarcón' }],
+    language: 'Spanish',
+    num_sections: 4,
+    totaltime: '2h 30m',
+    copyright_year: '1881',
+    description:
+      'Encantadora comedia romántica del huraño y cascarrabias militar don Jorge de Córdoba, cuya hosquedad se desarma ante los tiernos cuidados de la bondadosa Angustias.',
+    coverart_jpg: 'https://archive.org/services/img/capitan_veneno_1002_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/capitan_veneno_1002_librivox',
+    category: 'spanish',
+  },
+  {
+    id: 'ia_100mejorespoesias_1502_librivox',
+    identifier: '100mejorespoesias_1502_librivox',
+    title: 'Las Cien Mejores Poesías de la Lengua Castellana',
+    authors: [{ first_name: 'Marcelino Menéndez y', last_name: 'Pelayo' }],
+    language: 'Spanish',
+    num_sections: 50,
+    totaltime: '9h 15m',
+    copyright_year: '1908',
+    description:
+      'Antología poética canónica: Manrique, Garcilaso, San Juan de la Cruz, Fray Luis de León, Lope de Vega, Góngora, Quevedo, Espronceda y Zorrilla en lecturas líricas.',
+    coverart_jpg: 'https://archive.org/services/img/100mejorespoesias_1502_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/100mejorespoesias_1502_librivox',
+    category: 'poetry',
+  },
+  {
+    id: 'ia_simplemente_dario_0810_librivox',
+    identifier: 'simplemente_dario_0810_librivox',
+    title: 'Simplemente Darío: Versos Fundamentales',
+    authors: [{ first_name: 'Rubén', last_name: 'Darío' }],
+    language: 'Spanish',
+    num_sections: 10,
+    totaltime: '1h 20m',
+    copyright_year: '1905',
+    description:
+      'Poemas inmortales del genio modernista nicaragüense. Sonoridad, ritmo y belleza deslumbrante en Azul..., Prosas profanas y Cantos de vida y esperanza.',
+    coverart_jpg: 'https://archive.org/services/img/simplemente_dario_0810_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/simplemente_dario_0810_librivox',
+    category: 'poetry',
+  },
+  {
+    id: 'ia_naufragios_1308_librivox',
+    identifier: 'naufragios_1308_librivox',
+    title: 'Naufragios',
+    authors: [{ first_name: 'Álvar Núñez', last_name: 'Cabeza de Vaca' }],
+    language: 'Spanish',
+    num_sections: 20,
+    totaltime: '5h 45m',
+    copyright_year: '1542',
+    description:
+      'Impresionante crónica histórica y testimonio de supervivencia: Cabeza de Vaca y tres compañeros cruzan a pie durante ocho años el desconocido continente norteamericano.',
+    coverart_jpg: 'https://archive.org/services/img/naufragios_1308_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/naufragios_1308_librivox',
+    category: 'adventure',
+  },
+
+  // --- ENGLISH & UNIVERSAL CLASSICS ---
+  {
+    id: 'ia_dracula_librivox',
+    identifier: 'dracula_librivox',
     title: 'Dracula',
     authors: [{ first_name: 'Bram', last_name: 'Stoker' }],
     language: 'English',
@@ -266,13 +514,14 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     totaltime: '16h 31m',
     copyright_year: '1897',
     description:
-      'La historia clásica de vampiros de Bram Stoker: Jonathan Harker viaja al castillo de Transilvania y desata una lucha inmortal entre la luz y las sombras.',
-    coverart_jpg: 'https://archive.org/download/dracula_librivox/Dracula_1108.jpg',
-    coverart_thumbnail: 'https://archive.org/download/dracula_librivox/Dracula_1108_thumb.jpg',
+      'The quintessential Gothic epistolary vampire novel. Jonathan Harker journeys to Castle Dracula in Transylvania, unwittingly unleashing an immortal nightmare upon England.',
+    coverart_jpg: 'https://archive.org/services/img/dracula_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/dracula_librivox',
     category: 'mystery',
   },
   {
-    id: '314',
+    id: 'ia_adventures_holmes',
+    identifier: 'adventures_holmes',
     title: 'The Adventures of Sherlock Holmes',
     authors: [{ first_name: 'Sir Arthur Conan', last_name: 'Doyle' }],
     language: 'English',
@@ -280,14 +529,14 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     totaltime: '10h 18m',
     copyright_year: '1892',
     description:
-      'Colección de doce historias inolvidables del legendario detective privado Sherlock Holmes y su compañero el Dr. John Watson resolviendo los crímenes más intrincados de Londres victoriano.',
-    coverart_jpg: 'https://www.archive.org/download/LibrivoxCdCoverArt4/Adventures_of_Sherlock_Holmes_1003.jpg',
-    coverart_thumbnail:
-      'https://www.archive.org/download/LibrivoxCdCoverArt4/Adventures_of_Sherlock_Holmes_1003_thumb.jpg',
+      'Twelve legendary cases of consulting detective Sherlock Holmes and Dr. John Watson, including A Scandal in Bohemia, The Red-Headed League and The Speckled Band.',
+    coverart_jpg: 'https://archive.org/services/img/adventures_holmes',
+    coverart_thumbnail: 'https://archive.org/services/img/adventures_holmes',
     category: 'mystery',
   },
   {
-    id: '47',
+    id: 'ia_count_monte_cristo_0711_librivox',
+    identifier: 'count_monte_cristo_0711_librivox',
     title: 'The Count of Monte Cristo',
     authors: [{ first_name: 'Alexandre', last_name: 'Dumas' }],
     language: 'English',
@@ -295,7 +544,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     totaltime: '49h 43m',
     copyright_year: '1844',
     description:
-      'Una de las mayores historias de traición, justicia, aventuras y venganza jamás escritas. Edmond Dantès escapa del Castillo de If para reclamar su destino.',
+      'The supreme epic of betrayal, injustice, escape from the Château d\'If, and Edmond Dantès\' calculated retribution across Parisian high society.',
     coverart_jpg: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
     category: 'adventure',
@@ -310,9 +559,24 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     totaltime: '8h 20m',
     copyright_year: '1818',
     description:
-      'Víctor Frankenstein desafía las leyes de la naturaleza y da vida a una criatura creada con fragmentos humanos. Una obra maestra gótica sobre la soledad y la creación.',
+      'Victor Frankenstein unlocks the secret of animation and creates a sapient creature from human remains, unleashing a tragedy of hubris, loneliness and revenge.',
     coverart_jpg: 'https://archive.org/services/img/frankenstein_cs_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/frankenstein_cs_librivox',
+    category: 'classics',
+  },
+  {
+    id: 'ia_dorian_gray_librivox',
+    identifier: 'dorian_gray_librivox',
+    title: 'The Picture of Dorian Gray',
+    authors: [{ first_name: 'Oscar', last_name: 'Wilde' }],
+    language: 'English',
+    num_sections: 20,
+    totaltime: '7h 35m',
+    copyright_year: '1890',
+    description:
+      'Oscar Wilde\'s brilliant philosophical story of aestheticism, moral decay, and a portrait in the attic that ages and bears the scars of Dorian\'s secret sins.',
+    coverart_jpg: 'https://archive.org/services/img/dorian_gray_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/dorian_gray_librivox',
     category: 'classics',
   },
   {
@@ -325,25 +589,55 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
     totaltime: '3h 48m',
     copyright_year: '1895',
     description:
-      'La obra pionera de la ciencia ficción moderna. Un viajero en el tiempo victoriano se desplaza al año 802.701 d.C. para descubrir la división evolutiva de la humanidad: los Eloi y los Morlocks.',
+      'The foundational science fiction story. A Victorian Time Traveller travels to the year 802,701 AD to discover humanity divided into the Eloi and subterranean Morlocks.',
     coverart_jpg: 'https://archive.org/services/img/time_machine_0805_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/time_machine_0805_librivox',
     category: 'scifi',
   },
   {
-    id: '100',
-    title: 'Narrative of Arthur Gordon Pym',
-    authors: [{ first_name: 'Edgar Allan', last_name: 'Poe' }],
+    id: 'ia_pride_and_prejudice_librivox',
+    identifier: 'pride_and_prejudice_librivox',
+    title: 'Pride and Prejudice',
+    authors: [{ first_name: 'Jane', last_name: 'Austen' }],
     language: 'English',
-    num_sections: 27,
-    totaltime: '6h 22m',
-    copyright_year: '1838',
+    num_sections: 37,
+    totaltime: '10h 50m',
+    copyright_year: '1813',
     description:
-      'La única novela completa de Edgar Allan Poe: un joven polizón en un barco ballenero vive naufragios, motines y misterios en las aguas del Polo Sur.',
-    coverart_jpg: 'https://www.archive.org/download/LibrivoxCdCoverArt10/Narrative_Arthur_Gordon_Pym_1108.jpg',
-    coverart_thumbnail:
-      'https://www.archive.org/download/LibrivoxCdCoverArt10/Narrative_Arthur_Gordon_Pym_1108_thumb.jpg',
+      'Jane Austen\'s beloved masterpiece exploring manners, upbringing, morality, and the turbulent courtship between the quick-witted Elizabeth Bennet and Mr. Darcy.',
+    coverart_jpg: 'https://archive.org/services/img/pride_and_prejudice_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/pride_and_prejudice_librivox',
+    category: 'classics',
+  },
+  {
+    id: 'ia_jekyll_and_hyde_librivox',
+    identifier: 'jekyll_and_hyde_librivox',
+    title: 'Strange Case of Dr Jekyll and Mr Hyde',
+    authors: [{ first_name: 'Robert Louis', last_name: 'Stevenson' }],
+    language: 'English',
+    num_sections: 8,
+    totaltime: '2h 45m',
+    copyright_year: '1886',
+    description:
+      'The archetypal study of duality in human nature: the respectable Dr. Henry Jekyll creates a potion that liberates his dark, uninhibited alter ego Mr. Edward Hyde.',
+    coverart_jpg: 'https://archive.org/services/img/jekyll_and_hyde_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/jekyll_and_hyde_librivox',
     category: 'mystery',
+  },
+  {
+    id: 'ia_canterville_ghost_librivox',
+    identifier: 'canterville_ghost_librivox',
+    title: 'The Canterville Ghost',
+    authors: [{ first_name: 'Oscar', last_name: 'Wilde' }],
+    language: 'English',
+    num_sections: 4,
+    totaltime: '1h 15m',
+    copyright_year: '1887',
+    description:
+      'Oscar Wilde\'s delightfully amusing tale of a centuries-old English ghost outwitted and exasperated by a thoroughly modern American family.',
+    coverart_jpg: 'https://archive.org/services/img/canterville_ghost_librivox',
+    coverart_thumbnail: 'https://archive.org/services/img/canterville_ghost_librivox',
+    category: 'tales',
   },
 ];
 
@@ -528,6 +822,32 @@ export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> 
 
   const results: Book[] = [];
   const seenIds = new Set<string>();
+
+  // Strategy 0: Instant match from rich curated catalog
+  const qLower = q.toLowerCase();
+  for (const b of CURATED_FEATURED_BOOKS) {
+    if (filters.language === 'Spanish' && !b.language.toLowerCase().includes('span')) continue;
+    if (filters.language === 'English' && b.language.toLowerCase().includes('span')) continue;
+
+    const author = getAuthorName(b).toLowerCase();
+    const title = (b.title || '').toLowerCase();
+    const desc = (b.description || '').toLowerCase();
+
+    let matched = false;
+    if (filters.searchType === 'author') {
+      matched = author.includes(qLower);
+    } else if (filters.searchType === 'title') {
+      matched = title.includes(qLower);
+    } else {
+      matched = title.includes(qLower) || author.includes(qLower) || desc.includes(qLower);
+    }
+
+    if (matched) {
+      seenIds.add(b.id);
+      if (b.identifier) seenIds.add(b.identifier);
+      results.push(b);
+    }
+  }
 
   // Strategy A: Query LibriVox feed via proxied /api/feed/audiobooks
   try {

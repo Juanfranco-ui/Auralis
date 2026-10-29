@@ -15,21 +15,19 @@
 ## Español
 
 ### ¿Qué es Auralis?
-**Auralis** es un reproductor web de audiolibros de dominio público sin registros, sin muros de pago ni publicidad. Consume directamente los metadatos de la API abierta de **LibriVox** y transmite los archivos de audio MP3 alojados en **Internet Archive**. Su estética está inspirada en las publicaciones editoriales galardonadas en **Awwwards** (*Fraunces*, *Space Grotesk*, paleta coral/obsidiana y textura de grano analógico).
+**Auralis** es una plataforma web y reproductor editorial de audiolibros de dominio público sin registros, sin muros de pago ni publicidad. Consume directamente los metadatos de la API abierta de **LibriVox** y transmite los archivos de audio MP3 alojados en **Internet Archive**. Su estética está inspirada en las publicaciones editoriales galardonadas en **Awwwards** (*Fraunces*, *Space Grotesk*, paleta coral/obsidiana y textura de grano analógico).
 
 ### Características Clave
+- **Arquitectura Multi-Página & SEO**: Enrutamiento completo con URLs dedicadas para Catálogo (`/`), Buscador (`/buscar`), Mi Colección (`/coleccion`), Manifiesto (`/manifiesto`) y Fichas de libro individuales (`/libro/:id`), con etiquetas OpenGraph dinámicas y microdatos Schema.org (Audiobook).
 - **Catálogo y Capítulos**: Consulta la API de LibriVox (`/api/feed/audiobooks`), resuelve listas completas de secciones con duración, títulos limpios y portadas en alta definición.
-- **Buscador Híbrido**: Filtra por título, autor o idioma (Español / Inglés). Cuenta con respaldo automático a la API de Internet Archive para búsquedas en español (*Don Quijote, Bécquer, Kafka, Verne, etc.*).
+- **Buscador Híbrido**: Filtra por título, autor o idioma (Español / Inglés). Respaldo automático a la API de Internet Archive para búsquedas en español (*Don Quijote, Bécquer, Kafka, Verne, etc.*).
 - **Motor de Audio HTML5**:
   - Salto temporal de **±15 segundos** y cambio de pista.
+  - Interfaz móvil minimalista optimizada para pantallas táctiles.
   - Velocidad regulable (**0.75x a 2.0x**) y barra de progreso interactiva con tiempo restante.
   - **Temporizador de sueño** (*Sleep Timer*): 5, 15, 30, 45, 60 min o parada al final del capítulo.
   - Marcadores de tiempo con notas de texto personalizadas.
 - **Persistencia Local (`localStorage`)**: Guarda la posición exacta para *Continuar escuchando*, la lista de *Favoritos* y los *Marcadores* sin necesidad de base de datos ni backend externo.
-
-### Arquitectura & Manejo de CORS
-1. **Desarrollo / Full-stack**: Servidor Express (`server.ts`) con proxy inverso y caché en memoria para evitar bloqueos de CORS y límites de tasa de LibriVox.
-2. **Producción Estática (Netlify)**: Regla de reescritura en `netlify.toml` / `public/_redirects` y respaldo directo en el cliente hacia Internet Archive (`access-control-allow-origin: *`).
 
 ### Desarrollo Local
 ```bash
@@ -49,19 +47,16 @@ npm run build    # Compila en dist/ para producción
 **Auralis** is an open-source, editorial web audiobook player for public-domain literature with no paywalls, accounts, or advertisements. It queries metadata directly from the **LibriVox** public API and streams direct MP3 audio files hosted on **Internet Archive**. The UI design draws from **Awwwards** editorial projects, pairing high-contrast serif typography (*Fraunces*) with geometric grotesque labels (*Space Grotesk*), a dark obsidian & coral palette, and an analog film grain overlay.
 
 ### Key Features
+- **Multi-Page Architecture & SEO**: Full client-side routing with dedicated URLs for Catalog (`/`), Search (`/buscar`), My Collection (`/coleccion`), Manifesto (`/manifiesto`), and deep-linkable Book pages (`/libro/:id`) with dynamic OpenGraph meta tags and Schema.org structured data.
 - **Catalog & Chapter Indexing**: Fetches from LibriVox feed (`/api/feed/audiobooks`), resolving full section tracks, reader credits, durations, and high-res cover art.
 - **Hybrid Search Engine**: Query by title, author, or language (Spanish / English), backed by direct full-text search against the Internet Archive LibriVox collection.
 - **HTML5 Audio Engine**:
   - **±15s quick seek** and previous/next chapter controls.
-  - Playback rate adjustment (**0.75x to 2.0x**) and draggable progress scrubber with countdown.
+  - Clean, minimalist mobile player layout designed for quick thumb interaction.
+  - Playback rate adjustment (**0.75x to 2.0x**) and progress scrubber with countdown.
   - **Sleep Timer**: 5, 15, 30, 45, 60 minutes or stop at end-of-chapter.
   - In-audio timestamped bookmarks with custom notes.
 - **Client Persistence (`localStorage`)**: Auto-saves playback timestamp to *Continue Listening*, maintains *Favorites*, and stores user *Bookmarks* offline.
-
-### Tech Stack & CORS Strategy
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons.
-- **Backend / Proxy**: Express (`server.ts`) with in-memory caching for CORS-free local execution.
-- **Static Resiliency**: Pre-configured `netlify.toml` rewrite rules + direct fallback to Internet Archive's CORS-enabled API for serverless environments.
 
 ### Getting Started
 ```bash
@@ -71,8 +66,6 @@ npm install
 npm run dev      # Starts on http://localhost:3000
 npm run build    # Builds client bundle into dist/
 ```
-
----
 
 ---
 

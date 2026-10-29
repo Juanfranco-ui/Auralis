@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
-  ChevronDown,
   Play,
   Pause,
   RotateCcw,
   RotateCw,
   SkipBack,
   SkipForward,
-  Volume2,
-  VolumeX,
   Moon,
   BookmarkPlus,
   Bookmark as BookmarkIcon,
@@ -19,6 +16,7 @@ import {
   Loader2,
   Check,
   Disc3,
+  X,
 } from 'lucide-react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import {
@@ -39,8 +37,6 @@ export const ExpandedPlayerModal: React.FC = () => {
     currentTime,
     duration,
     playbackRate,
-    volume,
-    isMuted,
     isExpanded,
     sleepTimerOption,
     sleepTimerSeconds,
@@ -53,8 +49,6 @@ export const ExpandedPlayerModal: React.FC = () => {
     nextChapter,
     prevChapter,
     setPlaybackSpeed,
-    setAudioVolume,
-    toggleMute,
     setSleepTimer,
     addBookmark,
     removeBookmark,
@@ -98,41 +92,48 @@ export const ExpandedPlayerModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 bg-[#0c0a09]/98 backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in duration-300">
       {/* Top Bar with minimize button */}
-      <div className="px-6 py-5 flex items-center justify-between border-b border-stone-800/80 bg-[#0c0a09]">
+      <div className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-stone-800/80 bg-[#0c0a09] shrink-0">
         <button
           onClick={() => setIsExpanded(false)}
-          className="pill-btn outline text-xs cursor-pointer"
+          className="pill-btn outline text-xs cursor-pointer flex items-center gap-1.5 py-1.5 px-3.5"
         >
           <span>&darr; Minimizar</span>
         </button>
 
-        <div className="text-center">
+        <div className="text-center px-2 min-w-0">
           <div className="text-[10px] font-mono tracking-[0.28em] text-[#FF9398] uppercase">
             AUDIOLIBRO EN REPRODUCCIÓN
           </div>
-          <div className="text-xs text-stone-300 truncate max-w-xs sm:max-w-md font-serif mt-0.5">
+          <div className="text-xs text-stone-300 truncate max-w-[200px] sm:max-w-md font-serif mt-0.5">
             {currentBook.title}
           </div>
         </div>
 
-        <div className="w-24 flex justify-end">
+        <div className="w-20 sm:w-24 flex justify-end items-center gap-2">
           {sleepTimerSeconds !== null && sleepTimerSeconds > 0 && (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#FF9398]/10 border border-[#FF9398]/30 rounded-full text-[#FF9398] text-[11px] font-mono">
+            <div className="flex items-center gap-1 px-2.5 py-1 bg-[#FF9398]/10 border border-[#FF9398]/30 rounded-full text-[#FF9398] text-[10px] font-mono">
               <Moon className="w-3 h-3" />
               <span>{Math.ceil(sleepTimerSeconds / 60)}m</span>
             </div>
           )}
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-stone-900 transition-colors sm:hidden"
+            aria-label="Cerrar reproductor"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
       {/* Main Container */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center overscroll-contain">
         {/* Left Column: Visual Artwork & Central Player (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col items-center justify-center max-w-xl mx-auto w-full space-y-6">
-          {/* Cover Art with subtle vinyl rotation glow */}
+        <div className="lg:col-span-7 flex flex-col items-center justify-center max-w-xl mx-auto w-full space-y-4 sm:space-y-6">
+          {/* Cover Art */}
           <div className="relative group">
             <div
-              className={`w-60 h-60 sm:w-72 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border border-stone-800 bg-[#12100e] transition-all duration-700 ${
+              className={`w-44 h-44 sm:w-72 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border border-stone-800 bg-[#12100e] transition-all duration-700 ${
                 isPlaying ? 'shadow-[#FF9398]/10 border-[#FF9398]/40' : ''
               }`}
             >
@@ -145,8 +146,8 @@ export const ExpandedPlayerModal: React.FC = () => {
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#0f0e0c]">
-                  <Disc3 className="w-12 h-12 text-[#FF9398]/40 mb-3 animate-spin" />
-                  <span className="text-stone-200 font-serif text-lg font-bold">
+                  <Disc3 className="w-10 h-10 text-[#FF9398]/40 mb-3 animate-spin" />
+                  <span className="text-stone-200 font-serif text-base sm:text-lg font-bold">
                     {currentBook.title}
                   </span>
                   <span className="text-xs text-stone-500 mt-2 font-mono">{authorName}</span>
@@ -156,8 +157,8 @@ export const ExpandedPlayerModal: React.FC = () => {
 
             {/* Stylized Audio Waveform Indicator */}
             {isPlaying && (
-              <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 flex items-end gap-1.5 px-4 py-1.5 bg-[#0c0a09] border border-stone-800 rounded-full shadow-2xl">
-                {[4, 14, 8, 18, 12, 16, 6, 14, 8].map((h, i) => (
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-end gap-1.5 px-3 py-1 bg-[#0c0a09] border border-stone-800 rounded-full shadow-2xl">
+                {[4, 12, 8, 16, 10, 14, 6, 12, 8].map((h, i) => (
                   <div
                     key={i}
                     className="w-1 bg-[#FF9398] rounded-full animate-pulse"
@@ -173,20 +174,20 @@ export const ExpandedPlayerModal: React.FC = () => {
           </div>
 
           {/* Book & Chapter Headings */}
-          <div className="text-center space-y-2 w-full px-4 pt-2">
-            <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-100 line-clamp-1 leading-tight">
+          <div className="text-center space-y-1.5 w-full px-4 pt-1">
+            <h2 className="text-xl sm:text-3xl font-serif font-light text-stone-100 line-clamp-1 leading-tight">
               {currentBook.title}
             </h2>
-            <p className="text-sm sm:text-base text-[#FF9398] font-sans font-medium tracking-wide">
+            <p className="text-xs sm:text-base text-[#FF9398] font-sans font-medium tracking-wide">
               {authorName}
             </p>
-            <div className="text-xs text-stone-400 font-mono mt-1 tracking-wider uppercase">
+            <div className="text-[11px] sm:text-xs text-stone-400 font-mono mt-0.5 tracking-wider uppercase truncate">
               Pista {currentSectionIndex + 1} de {totalSections} &middot; {currentChapterTitle}
             </div>
           </div>
 
           {/* Progress Bar & Timers */}
-          <div className="w-full space-y-2 px-2">
+          <div className="w-full space-y-1.5 px-2">
             <input
               type="range"
               min={0}
@@ -194,9 +195,10 @@ export const ExpandedPlayerModal: React.FC = () => {
               step={1}
               value={currentTime}
               onChange={(e) => seekTo(Number(e.target.value))}
-              className="w-full h-2 bg-stone-900 rounded-lg appearance-none cursor-pointer focus:outline-none"
+              className="w-full h-1.5 sm:h-2 bg-stone-900 rounded-lg appearance-none cursor-pointer focus:outline-none"
+              aria-label="Posición de reproducción"
             />
-            <div className="flex justify-between text-xs font-mono text-stone-400">
+            <div className="flex justify-between text-[11px] sm:text-xs font-mono text-stone-400">
               <span className="tabular-nums">{formatPlayerTime(currentTime)}</span>
               <span className="tabular-nums">
                 {duration > 0
@@ -207,11 +209,12 @@ export const ExpandedPlayerModal: React.FC = () => {
           </div>
 
           {/* Large Tactile Playback Controls */}
-          <div className="flex items-center justify-center gap-4 sm:gap-6">
+          {/* Note: Prev Chapter & Next Chapter are HIDDEN on mobile for minimal interface */}
+          <div className="flex items-center justify-center gap-3 sm:gap-6">
             <button
               onClick={prevChapter}
               disabled={currentSectionIndex === 0 && currentTime <= 4}
-              className="p-2.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="hidden sm:inline-flex p-2.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Capítulo anterior"
             >
               <SkipBack className="w-6 h-6" />
@@ -219,11 +222,11 @@ export const ExpandedPlayerModal: React.FC = () => {
 
             <button
               onClick={() => skipBackward(15)}
-              className="p-3.5 bg-[#12100e] border border-stone-800 hover:border-[#FF9398]/50 text-stone-300 hover:text-white rounded-full transition-all relative group cursor-pointer"
+              className="p-3 sm:p-3.5 bg-[#12100e] border border-stone-800 hover:border-[#FF9398]/50 text-stone-300 hover:text-white rounded-full transition-all relative group cursor-pointer"
               title="Retroceder 15s"
             >
-              <RotateCcw className="w-5 h-5" />
-              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="absolute -bottom-1.5 sm:-bottom-2 left-1/2 -translate-x-1/2 text-[8px] sm:text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
                 15
               </span>
             </button>
@@ -232,25 +235,25 @@ export const ExpandedPlayerModal: React.FC = () => {
             <button
               onClick={togglePlayPause}
               disabled={isLoading}
-              className="w-16 h-16 rounded-full bg-[#FF9398] hover:bg-white text-stone-950 flex items-center justify-center shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-80"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FF9398] hover:bg-white text-stone-950 flex items-center justify-center shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-80"
               title={isPlaying ? 'Pausar' : 'Reproducir'}
             >
               {isLoading ? (
-                <Loader2 className="w-8 h-8 animate-spin" />
+                <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin" />
               ) : isPlaying ? (
-                <Pause className="w-8 h-8 fill-current" />
+                <Pause className="w-6 h-6 sm:w-8 sm:h-8 fill-current" />
               ) : (
-                <Play className="w-8 h-8 fill-current translate-x-1" />
+                <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-current translate-x-1" />
               )}
             </button>
 
             <button
               onClick={() => skipForward(15)}
-              className="p-3.5 bg-[#12100e] border border-stone-800 hover:border-[#FF9398]/50 text-stone-300 hover:text-white rounded-full transition-all relative group cursor-pointer"
+              className="p-3 sm:p-3.5 bg-[#12100e] border border-stone-800 hover:border-[#FF9398]/50 text-stone-300 hover:text-white rounded-full transition-all relative group cursor-pointer"
               title="Adelantar 15s"
             >
-              <RotateCw className="w-5 h-5" />
-              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
+              <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="absolute -bottom-1.5 sm:-bottom-2 left-1/2 -translate-x-1/2 text-[8px] sm:text-[9px] font-mono text-stone-400 group-hover:text-[#FF9398]">
                 15
               </span>
             </button>
@@ -261,15 +264,15 @@ export const ExpandedPlayerModal: React.FC = () => {
                 !currentBook.sections ||
                 currentSectionIndex >= currentBook.sections.length - 1
               }
-              className="p-2.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="hidden sm:inline-flex p-2.5 text-stone-400 hover:text-stone-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Siguiente capítulo"
             >
               <SkipForward className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Quick Settings Bar: Speed, Sleep, Volume, Bookmark */}
-          <div className="w-full flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-stone-900 px-2 text-xs font-mono">
+          {/* Quick Settings Bar: Speed, Sleep, Bookmark */}
+          <div className="w-full flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-stone-900 px-2 text-xs font-mono">
             {/* Speed buttons */}
             <div className="flex items-center gap-1">
               <span className="text-stone-500 mr-1 text-[10px] uppercase">Vel:</span>
@@ -277,7 +280,7 @@ export const ExpandedPlayerModal: React.FC = () => {
                 <button
                   key={sp}
                   onClick={() => setPlaybackSpeed(sp)}
-                  className={`px-2 py-1 rounded text-xs transition-colors cursor-pointer ${
+                  className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[11px] sm:text-xs transition-colors cursor-pointer ${
                     playbackRate === sp
                       ? 'bg-[#FF9398] text-stone-950 font-bold'
                       : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
@@ -289,13 +292,13 @@ export const ExpandedPlayerModal: React.FC = () => {
             </div>
 
             {/* Sleep options */}
-            <div className="flex items-center gap-1">
+            <div className="hidden sm:flex items-center gap-1">
               <Moon className="w-3.5 h-3.5 text-stone-500 mr-1" />
               {sleepOptions.map((opt) => (
                 <button
                   key={String(opt.value)}
                   onClick={() => setSleepTimer(opt.value)}
-                  className={`px-2 py-1 rounded text-xs transition-colors cursor-pointer ${
+                  className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs transition-colors cursor-pointer ${
                     sleepTimerOption === opt.value
                       ? 'bg-[#FF9398] text-stone-950 font-bold'
                       : 'text-stone-400 hover:text-stone-200 hover:bg-stone-900'
@@ -363,12 +366,12 @@ export const ExpandedPlayerModal: React.FC = () => {
         </div>
 
         {/* Right Column: Tabbed Chapters / Bookmarks / Details (5 cols) */}
-        <div className="lg:col-span-5 h-[500px] bg-[#12100e] border border-stone-800 rounded-2xl flex flex-col overflow-hidden">
-          {/* Tabs with Awwwards tracked style */}
-          <div className="flex border-b border-stone-800 bg-[#0c0a09] text-xs font-mono tracking-wider uppercase">
+        <div className="lg:col-span-5 h-[420px] sm:h-[500px] bg-[#12100e] border border-stone-800 rounded-2xl flex flex-col overflow-hidden">
+          {/* Tabs */}
+          <div className="flex border-b border-stone-800 bg-[#0c0a09] text-xs font-mono tracking-wider uppercase shrink-0">
             <button
               onClick={() => setActiveTab('chapters')}
-              className={`flex-1 py-3.5 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-3 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'chapters'
                   ? 'text-[#FF9398] border-b-2 border-[#FF9398] bg-[#12100e] font-semibold'
                   : 'text-stone-400 hover:text-stone-200'
@@ -379,7 +382,7 @@ export const ExpandedPlayerModal: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('bookmarks')}
-              className={`flex-1 py-3.5 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-3 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'bookmarks'
                   ? 'text-[#FF9398] border-b-2 border-[#FF9398] bg-[#12100e] font-semibold'
                   : 'text-stone-400 hover:text-stone-200'
@@ -390,7 +393,7 @@ export const ExpandedPlayerModal: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('info')}
-              className={`flex-1 py-3.5 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-3 text-center transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'info'
                   ? 'text-[#FF9398] border-b-2 border-[#FF9398] bg-[#12100e] font-semibold'
                   : 'text-stone-400 hover:text-stone-200'
@@ -402,7 +405,7 @@ export const ExpandedPlayerModal: React.FC = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 overscroll-contain">
             {activeTab === 'chapters' && (
               <div className="space-y-1">
                 {sections.length > 0 ? (
@@ -412,13 +415,13 @@ export const ExpandedPlayerModal: React.FC = () => {
                       <button
                         key={sec.id || idx}
                         onClick={() => playBook(currentBook, idx)}
-                        className={`w-full text-left p-3 rounded-xl flex items-center justify-between gap-3 text-xs transition-colors cursor-pointer ${
+                        className={`w-full text-left p-2.5 sm:p-3 rounded-xl flex items-center justify-between gap-3 text-xs transition-colors cursor-pointer ${
                           isSecPlaying
                             ? 'bg-[#FF9398]/15 border border-[#FF9398]/30 text-[#FF9398]'
                             : 'hover:bg-stone-900 text-stone-300'
                         }`}
                       >
-                        <div className="flex items-center gap-3 truncate">
+                        <div className="flex items-center gap-2.5 sm:gap-3 truncate">
                           <span
                             className={`w-5 font-mono text-[11px] tabular-nums shrink-0 ${
                               isSecPlaying ? 'text-[#FF9398] font-bold' : 'text-stone-500'
@@ -506,11 +509,11 @@ export const ExpandedPlayerModal: React.FC = () => {
                     <span>{currentBook.language || 'Dominio Público'}</span>
                   </div>
                   <div>
-                    <span className="text-stone-500 block uppercase">Año publicación:</span>
+                    <span className="text-stone-500 block uppercase">Año:</span>
                     <span>{currentBook.copyright_year || 'Clásico'}</span>
                   </div>
                   <div>
-                    <span className="text-stone-500 block uppercase">Duración total:</span>
+                    <span className="text-stone-500 block uppercase">Duración:</span>
                     <span className="font-mono text-stone-200">
                       {currentBook.totaltime || formatDuration(currentBook.totaltimesecs)}
                     </span>

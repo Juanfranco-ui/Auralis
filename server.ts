@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { CURATED_FEATURED_BOOKS } from './src/services/librivoxApi';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -120,6 +121,28 @@ app.get('/api/search', async (req: Request, res: Response) => {
 
     const results: any[] = [];
     const seenIds = new Set<string>();
+
+    // Strategy 0: Instant curated match
+    const qLower = q.toLowerCase();
+    for (const b of CURATED_FEATURED_BOOKS) {
+      if (lang === 'Spanish' && !b.language.toLowerCase().includes('span')) continue;
+      if (lang === 'English' && b.language.toLowerCase().includes('span')) continue;
+
+      const author = `${b.authors?.[0]?.first_name || ''} ${b.authors?.[0]?.last_name || ''}`.toLowerCase();
+      const title = (b.title || '').toLowerCase();
+      const desc = (b.description || '').toLowerCase();
+
+      let matched = false;
+      if (type === 'author') matched = author.includes(qLower);
+      else if (type === 'title') matched = title.includes(qLower);
+      else matched = title.includes(qLower) || author.includes(qLower) || desc.includes(qLower);
+
+      if (matched) {
+        seenIds.add(b.id);
+        if (b.identifier) seenIds.add(b.identifier);
+        results.push(b);
+      }
+    }
 
     // Strategy A: Query LibriVox API
     try {
@@ -263,6 +286,10 @@ const IDENTIFIER_ALIASES: Record<string, string> = {
   'ia_timemachine_version2_librivox': 'time_machine_0805_librivox',
   'novelas_ejemplares_1407_librivox': 'novelas_ejemplares_1110_librivox',
   'ia_novelas_ejemplares_1407_librivox': 'novelas_ejemplares_1110_librivox',
+  '271': 'dracula_librivox',
+  '314': 'adventures_holmes',
+  '47': 'count_monte_cristo_0711_librivox',
+  '100': 'aventurasde_arturogordonpym_1812_librivox',
 };
 
 // 3. Extended Book Detail & Chapter Resolution (/api/book/:id)
@@ -415,271 +442,13 @@ app.get('/api/book/:id', async (req: Request, res: Response) => {
 // 4. Featured & Curated Collections Endpoint (/api/featured)
 app.get('/api/featured', async (_req: Request, res: Response) => {
   try {
-    const cacheKey = 'featured_curated_v2';
+    const cacheKey = 'featured_curated_v4';
     const cached = getCached(cacheKey);
     if (cached) {
       return res.json(cached);
     }
-
-    // Curated high quality books with verified chapters and audio files
-    const curatedList = [
-      {
-        id: 'ia_don_quijote_vol1_0706_librivox',
-        identifier: 'don_quijote_vol1_0706_librivox',
-        title: 'Don Quijote de la Mancha (Vol. 1)',
-        authors: [{ first_name: 'Miguel de', last_name: 'Cervantes Saavedra' }],
-        language: 'Spanish',
-        num_sections: 37,
-        totaltime: '18h 45m',
-        copyright_year: '1605',
-        description:
-          'La obra cumbre de la literatura universal en español. Las hilarantes y conmovedoras aventuras del hidalgo Don Quijote y su fiel escudero Sancho Panza por las tierras de La Mancha.',
-        coverart_jpg: 'https://archive.org/services/img/don_quijote_vol1_0706_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/don_quijote_vol1_0706_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_leyendas_becquer_1208_librivox',
-        identifier: 'leyendas_becquer_1208_librivox',
-        title: 'Leyendas',
-        authors: [{ first_name: 'Gustavo Adolfo', last_name: 'Bécquer' }],
-        language: 'Spanish',
-        num_sections: 22,
-        totaltime: '5h 12m',
-        copyright_year: '1871',
-        description:
-          'Las leyendas misteriosas, góticas y fantásticas del gran maestro del romanticismo español: El monte de las ánimas, El rayo de luna, Los ojos verdes, Creed en Dios y El Cristo de la calavera.',
-        coverart_jpg: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_rimas_1810_librivox',
-        identifier: 'rimas_1810_librivox',
-        title: 'Rimas',
-        authors: [{ first_name: 'Gustavo Adolfo', last_name: 'Bécquer' }],
-        language: 'Spanish',
-        num_sections: 8,
-        totaltime: '1h 05m',
-        copyright_year: '1871',
-        description:
-          'La célebre colección de poemas románticos de Gustavo Adolfo Bécquer. Versos inmortales sobre la creación poética, la ilusión amorosa, el desengaño y el misterio de la soledad.',
-        coverart_jpg: 'https://archive.org/services/img/rimas_1810_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/rimas_1810_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_lametamorfosis_2101_librivox',
-        identifier: 'lametamorfosis_2101_librivox',
-        title: 'La Metamorfosis',
-        authors: [{ first_name: 'Franz', last_name: 'Kafka' }],
-        language: 'Spanish',
-        num_sections: 6,
-        totaltime: '2h 15m',
-        copyright_year: '1915',
-        description:
-          'Al despertar una mañana tras un sueño intranquilo, Gregorio Samsa se encontró sobre su cama convertido en un monstruoso insecto. Clásico supremo del existencialismo y la alienación humana.',
-        coverart_jpg: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_20000leguas_1602_librivox',
-        identifier: '20000leguas_1602_librivox',
-        title: '20.000 Leguas de Viaje Submarino',
-        authors: [{ first_name: 'Julio', last_name: 'Verne' }],
-        language: 'Spanish',
-        num_sections: 47,
-        totaltime: '16h 20m',
-        copyright_year: '1870',
-        description:
-          'El biólogo marino Pierre Aronnax, su sirviente Conseil y el arponero Ned Land viajan a bordo del fabuloso submarino Nautilus capitaneado por el misterioso Capitán Nemo.',
-        coverart_jpg: 'https://archive.org/services/img/20000leguas_1602_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/20000leguas_1602_librivox',
-        category: 'adventure',
-      },
-      {
-        id: 'ia_la_odisea_1501_librivox',
-        identifier: 'la_odisea_1501_librivox',
-        title: 'La Odisea',
-        authors: [{ first_name: '', last_name: 'Homero' }],
-        language: 'Spanish',
-        num_sections: 24,
-        totaltime: '12h 45m',
-        copyright_year: 'Siglo VIII a.C.',
-        description:
-          'El poema épico fundacional de la cultura occidental: el largo y peligroso regreso de Ulises (Odiseo) a su hogar en Ítaca tras la Guerra de Troya, sorteando peligros míticos.',
-        coverart_jpg: 'https://archive.org/services/img/la_odisea_1501_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/la_odisea_1501_librivox',
-        category: 'classics',
-      },
-      {
-        id: 'ia_isladeltesoro_1509_librivox',
-        identifier: 'isladeltesoro_1509_librivox',
-        title: 'La Isla del Tesoro',
-        authors: [{ first_name: 'Robert Louis', last_name: 'Stevenson' }],
-        language: 'Spanish',
-        num_sections: 34,
-        totaltime: '7h 10m',
-        copyright_year: '1883',
-        description:
-          'La cumbre de las novelas de piratas y aventuras. El joven Jim Hawkins descubre el mapa del tesoro del Capitán Flint y zarpa en La Española junto al carismático Long John Silver.',
-        coverart_jpg: 'https://archive.org/services/img/isladeltesoro_1509_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/isladeltesoro_1509_librivox',
-        category: 'adventure',
-      },
-      {
-        id: 'ia_sabuesodelosbaskerville_1512_librivox',
-        identifier: 'sabuesodelosbaskerville_1512_librivox',
-        title: 'El Sabueso de los Baskerville',
-        authors: [{ first_name: 'Sir Arthur Conan', last_name: 'Doyle' }],
-        language: 'Spanish',
-        num_sections: 15,
-        totaltime: '6h 35m',
-        copyright_year: '1902',
-        description:
-          'Sherlock Holmes y el doctor Watson investigan la misteriosa muerte de Sir Charles Baskerville y la leyenda de un sabueso fantasmal en los tenebrosos páramos de Dartmoor.',
-        coverart_jpg: 'https://archive.org/services/img/sabuesodelosbaskerville_1512_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/sabuesodelosbaskerville_1512_librivox',
-        category: 'mystery',
-      },
-      {
-        id: 'ia_novelas_ejemplares_1110_librivox',
-        identifier: 'novelas_ejemplares_1110_librivox',
-        title: 'Novelas Ejemplares',
-        authors: [{ first_name: 'Miguel de', last_name: 'Cervantes' }],
-        language: 'Spanish',
-        num_sections: 14,
-        totaltime: '12h 30m',
-        copyright_year: '1613',
-        description:
-          'Colección magistral de relatos del Siglo de Oro español: Rinconete y Cortadillo, La gitanilla, El licenciado Vidriera, El celoso extremeño y La ilustre fregona.',
-        coverart_jpg: 'https://archive.org/services/img/novelas_ejemplares_1110_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/novelas_ejemplares_1110_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_lazarillo_0912_librivox',
-        identifier: 'lazarillo_0912_librivox',
-        title: 'Lazarillo de Tormes',
-        authors: [{ first_name: '', last_name: 'Anónimo' }],
-        language: 'Spanish',
-        num_sections: 7,
-        totaltime: '2h 05m',
-        copyright_year: '1554',
-        description:
-          'La obra fundadora de la novela picaresca. La agudeza, ingenio y picardía de Lázaro para sobrevivir sirviendo a un ciego, un clérigo avaro y un hidalgo arruinado.',
-        coverart_jpg: 'https://archive.org/services/img/lazarillo_0912_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/lazarillo_0912_librivox',
-        category: 'spanish',
-      },
-      {
-        id: 'ia_cuentos_grimm_01_1109_librivox',
-        identifier: 'cuentos_grimm_01_1109_librivox',
-        title: 'Cuentos de Hadas',
-        authors: [{ first_name: 'Jacob & Wilhelm', last_name: 'Grimm' }],
-        language: 'Spanish',
-        num_sections: 16,
-        totaltime: '3h 40m',
-        copyright_year: '1812',
-        description:
-          'Los cuentos populares europeos inmortalizados por los Hermanos Grimm, narrados con calidez y fidelidad a las tradiciones orales centenarias.',
-        coverart_jpg: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
-        category: 'classics',
-      },
-      {
-        id: '271',
-        title: 'Dracula',
-        authors: [{ first_name: 'Bram', last_name: 'Stoker' }],
-        language: 'English',
-        num_sections: 27,
-        totaltime: '16h 31m',
-        copyright_year: '1897',
-        description:
-          'La historia clásica de vampiros de Bram Stoker: Jonathan Harker viaja al castillo de Transilvania y desata una lucha inmortal entre la luz y las sombras.',
-        coverart_jpg: 'https://archive.org/download/dracula_librivox/Dracula_1108.jpg',
-        coverart_thumbnail: 'https://archive.org/download/dracula_librivox/Dracula_1108_thumb.jpg',
-        category: 'mystery',
-      },
-      {
-        id: '314',
-        title: 'The Adventures of Sherlock Holmes',
-        authors: [{ first_name: 'Sir Arthur Conan', last_name: 'Doyle' }],
-        language: 'English',
-        num_sections: 12,
-        totaltime: '10h 18m',
-        copyright_year: '1892',
-        description:
-          'Colección de doce historias inolvidables del legendario detective privado Sherlock Holmes y su compañero el Dr. John Watson resolviendo los crímenes más intrincados de Londres victoriano.',
-        coverart_jpg: 'https://www.archive.org/download/LibrivoxCdCoverArt4/Adventures_of_Sherlock_Holmes_1003.jpg',
-        coverart_thumbnail:
-          'https://www.archive.org/download/LibrivoxCdCoverArt4/Adventures_of_Sherlock_Holmes_1003_thumb.jpg',
-        category: 'mystery',
-      },
-      {
-        id: '47',
-        title: 'The Count of Monte Cristo',
-        authors: [{ first_name: 'Alexandre', last_name: 'Dumas' }],
-        language: 'English',
-        num_sections: 128,
-        totaltime: '49h 43m',
-        copyright_year: '1844',
-        description:
-          'Una de las mayores historias de traición, justicia, aventuras y venganza jamás escritas. Edmond Dantès escapa del Castillo de If para reclamar su destino.',
-        coverart_jpg: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
-        category: 'adventure',
-      },
-      {
-        id: 'ia_frankenstein_cs_librivox',
-        identifier: 'frankenstein_cs_librivox',
-        title: 'Frankenstein, or The Modern Prometheus',
-        authors: [{ first_name: 'Mary', last_name: 'Shelley' }],
-        language: 'English',
-        num_sections: 29,
-        totaltime: '8h 20m',
-        copyright_year: '1818',
-        description:
-          'Víctor Frankenstein desafía las leyes de la naturaleza y da vida a una criatura creada con fragmentos humanos. Una obra maestra gótica sobre la soledad y la creación.',
-        coverart_jpg: 'https://archive.org/services/img/frankenstein_cs_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/frankenstein_cs_librivox',
-        category: 'classics',
-      },
-      {
-        id: 'ia_time_machine_0805_librivox',
-        identifier: 'time_machine_0805_librivox',
-        title: 'The Time Machine',
-        authors: [{ first_name: 'H. G.', last_name: 'Wells' }],
-        language: 'English',
-        num_sections: 16,
-        totaltime: '3h 48m',
-        copyright_year: '1895',
-        description:
-          'La obra pionera de la ciencia ficción moderna. Un viajero en el tiempo victoriano se desplaza al año 802.701 d.C. para descubrir la división evolutiva de la humanidad: los Eloi y los Morlocks.',
-        coverart_jpg: 'https://archive.org/services/img/time_machine_0805_librivox',
-        coverart_thumbnail: 'https://archive.org/services/img/time_machine_0805_librivox',
-        category: 'scifi',
-      },
-      {
-        id: '100',
-        title: 'Narrative of Arthur Gordon Pym',
-        authors: [{ first_name: 'Edgar Allan', last_name: 'Poe' }],
-        language: 'English',
-        num_sections: 27,
-        totaltime: '6h 22m',
-        copyright_year: '1838',
-        description:
-          'La única novela completa de Edgar Allan Poe: un joven polizón en un barco ballenero vive naufragios, motines y misterios en las aguas del Polo Sur.',
-        coverart_jpg: 'https://www.archive.org/download/LibrivoxCdCoverArt10/Narrative_Arthur_Gordon_Pym_1108.jpg',
-        coverart_thumbnail:
-          'https://www.archive.org/download/LibrivoxCdCoverArt10/Narrative_Arthur_Gordon_Pym_1108_thumb.jpg',
-        category: 'mystery',
-      },
-    ];
-
-    setCache(cacheKey, curatedList);
-    res.json(curatedList);
+    setCache(cacheKey, CURATED_FEATURED_BOOKS);
+    res.json(CURATED_FEATURED_BOOKS);
   } catch (err: any) {
     console.error('Featured list error:', err.message);
     res.status(500).json([]);
