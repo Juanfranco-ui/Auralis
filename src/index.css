@@ -165,3 +165,22 @@ input[type="range"] {
 ::-webkit-scrollbar-thumb:hover {
   background: #44403c;
 }
+
+/* Ocultar badge / drawer iframe inyectado por Netlify */
+#nl-badge-frame,
+iframe#nl-badge-frame,
+[id="nl-badge-frame"],
+iframe[src*="netlify"],
+.netlify-drawer,
+#netlify-drawer,
+[data-netlify-drawer] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -99999px !important;
+  z-index: -9999 !important;
+}
