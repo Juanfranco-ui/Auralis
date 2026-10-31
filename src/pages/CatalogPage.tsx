@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HeroSection } from '../components/HeroSection';
 import { BookCard } from '../components/BookCard';
@@ -6,7 +6,7 @@ import { SeoHead } from '../components/SeoHead';
 import { Book } from '../types/audiobook';
 import { fetchFeaturedBooks, fetchAudiobooksFeed, getAuthorName } from '../services/librivoxApi';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
-import { Sparkles, Compass, Loader2, Search, X, ChevronDown, BookOpen } from 'lucide-react';
+import { Sparkles, Compass, Loader2, Search, X, ChevronDown, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 
 export const CatalogPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +19,14 @@ export const CatalogPage: React.FC = () => {
   const [languageFilter, setLanguageFilter] = useState<'all' | 'es' | 'en'>('all');
   const [filterText, setFilterText] = useState<string>('');
   const [showAllBooks, setShowAllBooks] = useState<boolean>(false);
+  const categoryContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (categoryContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -260 : 260;
+      categoryContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -148,19 +156,19 @@ export const CatalogPage: React.FC = () => {
 
       {/* Editorial Statement Strip */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-800 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
+        <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-700 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
           <div className="max-w-2xl space-y-2">
-            <div className="text-[10px] font-mono tracking-[0.28em] text-[#FF9398] uppercase">
+            <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
               EDITORIAL &middot; PROYECTO ABIERTO
             </div>
-            <p className="text-base sm:text-lg font-serif font-light text-stone-200 leading-relaxed">
+            <p className="text-lg sm:text-xl font-serif font-light text-stone-100 leading-relaxed">
               «Las voces de miles de lectores alrededor del mundo convierten los textos silenciosos de Gutenberg en memorias sonoras imperecederas.»
             </p>
           </div>
           <div className="shrink-0 flex items-center gap-3">
             <button
               onClick={() => navigate('/buscar')}
-              className="pill-btn coral text-xs cursor-pointer shadow-md"
+              className="pill-btn coral text-xs sm:text-sm py-2.5 px-5 cursor-pointer shadow-md font-bold"
             >
               <span>Consultar Todo el Archivo</span>
               <span className="arr">&rarr;</span>
@@ -173,14 +181,14 @@ export const CatalogPage: React.FC = () => {
       <section id="catalogo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-mt-24">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-stone-800 pb-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-[#FF9398] uppercase tracking-[0.24em]">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] uppercase tracking-wider font-bold">
+              <Sparkles className="w-4 h-4" />
               <span>Colección Seleccionada &middot; {featuredBooks.length} Obras Disponibles</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-serif font-light text-stone-100">
               Historias & Clásicos del Archivo
             </h2>
-            <p className="text-xs sm:text-sm text-stone-400 font-sans font-light max-w-xl">
+            <p className="text-sm sm:text-base text-stone-300 font-sans font-light max-w-xl">
               Explora una selección de literatura española e historias universales con grabaciones completas en alta definición y sin cortes.
             </p>
           </div>
@@ -188,28 +196,29 @@ export const CatalogPage: React.FC = () => {
           {/* Inline Filter Controls & Search */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {/* Live Search inside Catalog */}
-            <div className="relative min-w-[240px] sm:w-64">
-              <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="relative min-w-[260px] sm:w-72">
+              <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
                 placeholder="Filtrar por autor o título..."
-                className="w-full pl-9 pr-8 py-2 bg-[#12100e] border border-stone-800 focus:border-[#FF9398] rounded-xl text-xs text-stone-200 placeholder-stone-500 outline-none transition-colors"
+                aria-label="Filtrar catálogo por autor o título"
+                className="w-full pl-10 pr-9 py-2.5 bg-[#12100e] border border-stone-700 focus:border-[#FF9398] rounded-xl text-sm text-stone-100 placeholder-stone-400 outline-none transition-colors font-sans"
               />
               {filterText && (
                 <button
                   onClick={() => setFilterText('')}
-                  aria-label="Limpiar filtro"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300"
+                  aria-label="Limpiar filtro de búsqueda"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white p-1"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
 
             {/* Language Toggle Pills */}
-            <div className="flex items-center p-1 bg-[#12100e] border border-stone-800 rounded-xl text-xs font-mono">
+            <div className="flex items-center p-1 bg-[#12100e] border border-stone-700 rounded-xl text-xs sm:text-sm font-mono">
               {[
                 { id: 'all', label: 'Todos' },
                 { id: 'es', label: 'Español' },
@@ -218,11 +227,12 @@ export const CatalogPage: React.FC = () => {
                 <button
                   key={lang.id}
                   onClick={() => setLanguageFilter(lang.id as any)}
-                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium ${
                     languageFilter === lang.id
-                      ? 'bg-stone-800 text-stone-100 font-semibold'
-                      : 'text-stone-400 hover:text-stone-200'
+                      ? 'bg-[#FF9398] text-stone-950 font-bold'
+                      : 'text-stone-300 hover:text-white'
                   }`}
+                  aria-label={`Filtrar por idioma: ${lang.label}`}
                 >
                   {lang.label}
                 </button>
@@ -231,45 +241,74 @@ export const CatalogPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Category Filter Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin text-xs font-mono">
-          {[
-            { id: 'all', label: 'Todas las historias' },
-            { id: 'spanish', label: 'En Español' },
-            { id: 'tales', label: 'Cuentos & Relatos' },
-            { id: 'mystery', label: 'Misterio & Terror' },
-            { id: 'adventure', label: 'Aventura' },
-            { id: 'classics', label: 'Clásicos' },
-            { id: 'poetry', label: 'Poesía & Lírica' },
-            { id: 'scifi', label: 'Ciencia Ficción' },
-          ].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => {
-                setExploreCategory(cat.id);
-                setShowAllBooks(true);
-              }}
-              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap border ${
-                exploreCategory === cat.id
-                  ? 'bg-[#FF9398] text-stone-950 font-bold border-[#FF9398] shadow-md'
-                  : 'bg-[#12100e] text-stone-400 border-stone-800 hover:border-stone-700 hover:text-stone-200'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+        {/* Category Filter Tabs with Desktop Navigation Arrows & Mobile Styled Scroll */}
+        <div className="relative flex items-center">
+          {/* Left Arrow (Desktop only) */}
+          <button
+            type="button"
+            onClick={() => scrollCategories('left')}
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 mr-2 transition-all cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
+            title="Desplazar categorías hacia la izquierda"
+            aria-label="Desplazar categorías hacia la izquierda"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          <div
+            ref={categoryContainerRef}
+            className="flex-1 flex items-center gap-2 overflow-x-auto py-1 text-xs sm:text-sm font-mono scroll-smooth mobile-filter-scroll desktop-no-scrollbar"
+            role="tablist"
+            aria-label="Categorías de audiolibros"
+          >
+            {[
+              { id: 'all', label: 'Todas las historias' },
+              { id: 'spanish', label: 'En Español' },
+              { id: 'tales', label: 'Cuentos & Relatos' },
+              { id: 'mystery', label: 'Misterio & Terror' },
+              { id: 'adventure', label: 'Aventura' },
+              { id: 'classics', label: 'Clásicos' },
+              { id: 'poetry', label: 'Poesía & Lírica' },
+              { id: 'scifi', label: 'Ciencia Ficción' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setExploreCategory(cat.id);
+                  setShowAllBooks(true);
+                }}
+                className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer whitespace-nowrap border font-medium ${
+                  exploreCategory === cat.id
+                    ? 'bg-[#FF9398] text-stone-950 font-bold border-[#FF9398] shadow-md'
+                    : 'bg-[#12100e] text-stone-300 border-stone-700 hover:border-stone-500 hover:text-white'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right Arrow (Desktop only) */}
+          <button
+            type="button"
+            onClick={() => scrollCategories('right')}
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 ml-2 transition-all cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
+            title="Desplazar categorías hacia la derecha"
+            aria-label="Desplazar categorías hacia la derecha"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Counter notification */}
-        <div className="flex items-center justify-between text-xs font-mono text-stone-400 pt-1">
+        <div className="flex items-center justify-between text-xs sm:text-sm font-mono text-stone-300 pt-1 font-medium">
           <span>
-            Mostrando <strong className="text-stone-200">{visibleBooks.length}</strong> de <strong className="text-stone-200">{filteredFeaturedBooks.length}</strong> historias cargadas
+            Mostrando <strong className="text-white font-bold">{visibleBooks.length}</strong> de <strong className="text-white font-bold">{filteredFeaturedBooks.length}</strong> historias cargadas
           </span>
 
           {isDefaultView && (
             <button
               onClick={() => setShowAllBooks(!showAllBooks)}
-              className="text-[#FF9398] hover:underline cursor-pointer flex items-center gap-1"
+              className="text-[#FF9398] font-bold hover:underline cursor-pointer flex items-center gap-1"
             >
               <span>{showAllBooks ? 'Ver vista compacta (15)' : `Ver todo el catálogo (${filteredFeaturedBooks.length})`}</span>
             </button>
@@ -278,17 +317,17 @@ export const CatalogPage: React.FC = () => {
 
         {/* Grid of Books */}
         {loadingExplore ? (
-          <div className="py-24 flex flex-col items-center justify-center text-stone-400 space-y-3 font-mono text-xs">
+          <div className="py-24 flex flex-col items-center justify-center text-stone-300 space-y-3 font-mono text-sm">
             <Loader2 className="w-8 h-8 animate-spin text-[#FF9398]" />
             <p>Cargando catálogo editorial...</p>
           </div>
         ) : visibleBooks.length === 0 ? (
-          <div className="py-20 text-center bg-[#12100e] rounded-3xl border border-stone-800 p-8 space-y-3 max-w-md mx-auto">
-            <BookOpen className="w-8 h-8 mx-auto text-stone-600" />
-            <h3 className="text-base font-serif font-medium text-stone-200">
+          <div className="py-20 text-center bg-[#12100e] rounded-3xl border border-stone-700 p-8 space-y-3 max-w-md mx-auto">
+            <BookOpen className="w-10 h-10 mx-auto text-stone-500" />
+            <h3 className="text-lg font-serif font-medium text-stone-100">
               No se encontraron historias con estos filtros
             </h3>
-            <p className="text-xs text-stone-400 font-sans">
+            <p className="text-sm text-stone-300 font-sans">
               Prueba cambiando la categoría, el idioma o limpiando el texto de búsqueda.
             </p>
             <button
@@ -297,13 +336,13 @@ export const CatalogPage: React.FC = () => {
                 setLanguageFilter('all');
                 setFilterText('');
               }}
-              className="mt-2 text-xs text-[#FF9398] font-mono hover:underline cursor-pointer"
+              className="mt-2 text-sm text-[#FF9398] font-mono font-bold hover:underline cursor-pointer"
             >
               Restablecer filtros
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-6">
             {visibleBooks.map((book) => (
               <BookCard
                 key={book.id}
@@ -319,7 +358,7 @@ export const CatalogPage: React.FC = () => {
           <div className="pt-4 flex justify-center">
             <button
               onClick={() => setShowAllBooks(true)}
-              className="group px-6 py-3.5 bg-[#12100e] hover:bg-stone-900 border border-stone-800 hover:border-[#FF9398]/60 text-stone-200 rounded-2xl text-xs font-mono flex items-center gap-2 transition-all cursor-pointer shadow-lg"
+              className="group px-7 py-4 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-100 rounded-2xl text-xs sm:text-sm font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
             >
               <span>Ver todas las historias disponibles (+{remainingCount} más)</span>
               <ChevronDown className="w-4 h-4 text-[#FF9398] group-hover:translate-y-0.5 transition-transform" />
@@ -333,8 +372,8 @@ export const CatalogPage: React.FC = () => {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-6">
           <div className="flex items-center justify-between border-b border-stone-800 pb-5">
             <div>
-              <div className="flex items-center gap-2 text-[10px] font-mono text-[#FF9398] uppercase tracking-[0.24em]">
-                <Compass className="w-3.5 h-3.5 text-[#FF9398]" />
+              <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] uppercase tracking-wider font-bold">
+                <Compass className="w-4 h-4 text-[#FF9398]" />
                 <span>Transmisión en Vivo</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-100 mt-1">
@@ -344,14 +383,14 @@ export const CatalogPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/buscar')}
-              className="pill-btn outline text-[11px] cursor-pointer"
+              className="pill-btn outline text-xs sm:text-sm py-2 px-4 cursor-pointer font-bold"
             >
               <span>Ver Todo</span>
               <span className="arr">&rarr;</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 sm:gap-5">
             {feedBooks.slice(0, 12).map((book) => (
               <BookCard
                 key={book.id}

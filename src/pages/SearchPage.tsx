@@ -6,7 +6,7 @@ import { SeoHead } from '../components/SeoHead';
 import { Book, SearchFilters } from '../types/audiobook';
 import { searchAudiobooks, fetchFeaturedBooks } from '../services/librivoxApi';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
-import { Search as SearchIcon, Loader2, Sparkles, BookOpen } from 'lucide-react';
+import { Search as SearchIcon, Loader2, Sparkles } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -128,13 +128,13 @@ export const SearchPage: React.FC = () => {
       />
 
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="text-[10px] font-mono tracking-[0.28em] text-[#FF9398] uppercase">
+        <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
           ÍNDICE COMPLETO &middot; BÚSQUEDA CRUZADA
         </div>
         <h1 className="text-3xl sm:text-5xl font-serif font-light text-stone-100">
           Buscador del Archivo
         </h1>
-        <p className="text-sm text-stone-400 font-sans font-light">
+        <p className="text-base text-stone-300 font-sans font-normal">
           Consulta en simultáneo los servidores de LibriVox y las colecciones sonoras de Internet Archive.
         </p>
       </div>
@@ -147,16 +147,16 @@ export const SearchPage: React.FC = () => {
       />
 
       {/* Quick Search Chips */}
-      <div className="space-y-2">
-        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 text-center">
+      <div className="space-y-3">
+        <div className="text-xs font-mono uppercase tracking-wider text-stone-300 text-center font-bold">
           Búsquedas recomendadas:
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
           {quickPills.map((pill) => (
             <button
               key={pill}
               onClick={() => handleQuickTagClick(pill)}
-              className="px-3 py-1.5 bg-[#12100e] hover:bg-stone-900 border border-stone-800 hover:border-[#FF9398]/50 text-stone-300 hover:text-white rounded-full text-xs font-sans transition-all cursor-pointer shadow-sm"
+              className="px-4 py-2 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full text-xs sm:text-sm font-sans font-medium transition-all cursor-pointer shadow-sm"
             >
               {pill}
             </button>
@@ -166,16 +166,16 @@ export const SearchPage: React.FC = () => {
 
       {/* Results Grid or Curated Browser */}
       {isSearching ? (
-        <div className="py-24 flex flex-col items-center justify-center text-stone-400 space-y-3 font-mono text-xs">
+        <div className="py-24 flex flex-col items-center justify-center text-stone-300 space-y-3 font-mono text-sm">
           <Loader2 className="w-8 h-8 animate-spin text-[#FF9398]" />
           <p>Consultando servidores de LibriVox & Internet Archive...</p>
         </div>
       ) : hasSearched ? (
         searchResults.length > 0 ? (
           <div className="space-y-6">
-            <div className="flex items-center justify-between text-xs font-mono text-stone-400 border-b border-stone-800 pb-3">
+            <div className="flex items-center justify-between text-xs sm:text-sm font-mono text-stone-300 border-b border-stone-800 pb-3 font-medium">
               <span>
-                Resultados para <strong className="text-stone-200">&ldquo;{searchFilters.query}&rdquo;</strong> ({searchResults.length} encontrados)
+                Resultados para <strong className="text-white font-bold">&ldquo;{searchFilters.query}&rdquo;</strong> ({searchResults.length} encontrados)
               </span>
               <button
                 onClick={() => {
@@ -184,7 +184,7 @@ export const SearchPage: React.FC = () => {
                   setHasSearched(false);
                   setSearchResults([]);
                 }}
-                className="text-[#FF9398] hover:underline cursor-pointer"
+                className="text-[#FF9398] font-bold hover:underline cursor-pointer"
               >
                 Limpiar búsqueda
               </button>
@@ -201,12 +201,12 @@ export const SearchPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 bg-[#12100e] rounded-3xl border border-stone-800 p-8 space-y-3 max-w-md mx-auto">
-            <SearchIcon className="w-10 h-10 mx-auto text-stone-600" />
-            <h3 className="text-base font-serif font-medium text-stone-200">
+          <div className="text-center py-20 bg-[#12100e] rounded-3xl border border-stone-700 p-8 space-y-3 max-w-md mx-auto">
+            <SearchIcon className="w-10 h-10 mx-auto text-stone-500" />
+            <h3 className="text-lg font-serif font-medium text-stone-100">
               Sin coincidencias para &ldquo;{searchFilters.query}&rdquo;
             </h3>
-            <p className="text-xs text-stone-400 font-sans leading-relaxed">
+            <p className="text-sm text-stone-300 font-sans leading-relaxed">
               Prueba buscando por apellido (ej: Cervantes, Quiroga, Bécquer, Doyle, Poe, Verne, Kafka) o un término temático general.
             </p>
           </div>
@@ -215,12 +215,12 @@ export const SearchPage: React.FC = () => {
         /* Pre-search: Browse Curated Collection */
         <div className="pt-6 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-800 pb-4">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] uppercase tracking-[0.24em]">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-mono text-[#FF9398] uppercase tracking-wider font-bold">
+              <Sparkles className="w-4 h-4" />
               <span>Obras Disponibles en el Catálogo ({featuredBooks.length})</span>
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto text-xs font-mono">
+            <div className="flex items-center gap-2 overflow-x-auto text-xs sm:text-sm font-mono">
               {[
                 { id: 'all', label: 'Todas' },
                 { id: 'spanish', label: 'En Español' },
@@ -231,10 +231,10 @@ export const SearchPage: React.FC = () => {
                 <button
                   key={c.id}
                   onClick={() => setActiveCategory(c.id)}
-                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer font-medium ${
                     activeCategory === c.id
                       ? 'bg-[#FF9398] text-stone-950 font-bold'
-                      : 'bg-stone-900 text-stone-400 hover:text-stone-200'
+                      : 'bg-stone-900 text-stone-300 hover:text-white border border-stone-700'
                   }`}
                 >
                   {c.label}

@@ -77,7 +77,7 @@ export const BookPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-24 flex flex-col items-center justify-center text-stone-400 space-y-4 font-mono text-xs">
+      <div className="max-w-5xl mx-auto px-4 py-24 flex flex-col items-center justify-center text-stone-300 space-y-4 font-mono text-sm">
         <Loader2 className="w-8 h-8 animate-spin text-[#FF9398]" />
         <p>Cargando ficha del audiolibro y resolviendo capítulos...</p>
       </div>
@@ -87,14 +87,14 @@ export const BookPage: React.FC = () => {
   if (error || !book) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <div className="p-8 bg-[#12100e] border border-stone-800 rounded-3xl space-y-3">
-          <BookOpen className="w-10 h-10 mx-auto text-stone-600" />
-          <h2 className="text-xl font-serif text-stone-200">Audiolibro no encontrado</h2>
-          <p className="text-xs text-stone-400 leading-relaxed font-sans">
+        <div className="p-8 bg-[#12100e] border border-stone-700 rounded-3xl space-y-3">
+          <BookOpen className="w-10 h-10 mx-auto text-stone-500" />
+          <h2 className="text-xl font-serif text-stone-100">Audiolibro no encontrado</h2>
+          <p className="text-sm text-stone-300 leading-relaxed font-sans">
             {error || 'El identificador solicitado no coincide con ningún registro del catálogo.'}
           </p>
           <div className="pt-2">
-            <Link to="/buscar" className="pill-btn coral text-xs inline-flex">
+            <Link to="/buscar" className="pill-btn coral text-xs sm:text-sm inline-flex font-bold">
               <span>Explorar otros libros</span>
               <span className="arr">&rarr;</span>
             </Link>
@@ -175,30 +175,30 @@ export const BookPage: React.FC = () => {
       />
 
       {/* Navigation Breadcrumb */}
-      <div className="flex items-center justify-between text-xs font-mono text-stone-400 border-b border-stone-800 pb-4">
+      <div className="flex items-center justify-between text-xs sm:text-sm font-mono text-stone-300 border-b border-stone-800 pb-4 font-medium">
         <Link
           to="/"
-          className="flex items-center gap-1.5 hover:text-[#FF9398] transition-colors"
+          className="flex items-center gap-2 hover:text-[#FF9398] transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-4 h-4" />
           <span>Volver al Catálogo</span>
         </Link>
 
         <div className="flex items-center gap-2">
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-900 border border-stone-700 hover:text-white transition-colors cursor-pointer text-xs sm:text-sm font-mono font-medium"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             <span>{copied ? '¡Enlace copiado!' : 'Compartir'}</span>
           </button>
         </div>
       </div>
 
       {/* Main Book Lockup Card */}
-      <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-800 rounded-3xl shadow-xl flex flex-col md:flex-row gap-8 items-start">
+      <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-700 rounded-3xl shadow-xl flex flex-col md:flex-row gap-8 items-start">
         {/* Cover Art */}
-        <div className="w-44 sm:w-60 aspect-[3/4] bg-[#0c0a09] rounded-2xl overflow-hidden border border-stone-800 shrink-0 shadow-2xl mx-auto md:mx-0">
+        <div className="w-44 sm:w-64 aspect-[3/4] bg-[#0c0a09] rounded-2xl overflow-hidden border border-stone-700 shrink-0 shadow-2xl mx-auto md:mx-0">
           {coverUrl ? (
             <img
               src={coverUrl}
@@ -208,8 +208,8 @@ export const BookPage: React.FC = () => {
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-[#0c0a09]">
-              <BookOpen className="w-10 h-10 text-[#FF9398]/40 mb-2" />
-              <span className="font-serif text-xs font-semibold text-stone-300 line-clamp-3">
+              <BookOpen className="w-10 h-10 text-[#FF9398] mb-2" />
+              <span className="font-serif text-sm font-semibold text-stone-200 line-clamp-3">
                 {book.title}
               </span>
             </div>
@@ -219,7 +219,7 @@ export const BookPage: React.FC = () => {
         {/* Book Details */}
         <div className="flex-1 space-y-4 w-full">
           <div>
-            <div className="text-[10px] font-mono tracking-[0.26em] text-[#FF9398] uppercase mb-1">
+            <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase mb-1 font-bold">
               FICHA DEL ARCHIVO &middot; ID #{book.id}
             </div>
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-light text-stone-100 leading-tight">
@@ -231,7 +231,7 @@ export const BookPage: React.FC = () => {
           </div>
 
           {/* Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-stone-400">
+          <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-mono text-stone-300 font-medium">
             <span>{book.language || 'Dominio Público'}</span>
             <span aria-hidden="true">&middot;</span>
             {book.copyright_year && (
@@ -251,7 +251,7 @@ export const BookPage: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={handlePlayFirst}
-              className="pill-btn coral text-xs py-3 px-6 cursor-pointer shadow-xl"
+              className="pill-btn coral text-xs sm:text-sm py-3 px-6 cursor-pointer shadow-xl font-bold"
             >
               {isCurrentlyPlayingThisBook ? (
                 <>
@@ -273,35 +273,35 @@ export const BookPage: React.FC = () => {
 
             <button
               onClick={() => toggleFavorite(book)}
-              className={`pill-btn ${isFav ? 'coral' : 'outline'} text-xs py-2.5 px-5 cursor-pointer`}
+              className={`pill-btn ${isFav ? 'coral' : 'outline'} text-xs sm:text-sm py-2.5 px-5 cursor-pointer font-bold`}
             >
-              <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-current' : ''}`} />
+              <Heart className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
               <span>{isFav ? 'En tu colección' : 'Añadir a colección'}</span>
             </button>
 
             {currentBook?.id === book.id && (
               <button
                 onClick={() => setIsExpanded(true)}
-                className="pill-btn outline text-xs py-2.5 px-4 text-[#FF9398] cursor-pointer"
+                className="pill-btn outline text-xs sm:text-sm py-2.5 px-4 text-[#FF9398] cursor-pointer font-bold"
               >
-                <Volume2 className="w-3.5 h-3.5" />
+                <Volume2 className="w-4 h-4" />
                 <span>Abrir reproductor</span>
               </button>
             )}
           </div>
 
           {/* External links */}
-          <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-stone-400 font-mono">
+          <div className="flex flex-wrap items-center gap-4 pt-2 text-xs sm:text-sm text-stone-300 font-mono font-medium">
             {book.url_text_source && (
               <a
                 href={book.url_text_source}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 hover:text-[#FF9398] transition-colors"
+                className="flex items-center gap-1.5 hover:text-[#FF9398] transition-colors"
               >
-                <BookOpen className="w-3 h-3" />
-                <span>Texto en Project Gutenberg</span>
-                <ExternalLink className="w-3 h-3 ml-0.5" />
+                <BookOpen className="w-4 h-4" />
+                <span>Texto en Gutenberg</span>
+                <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
               </a>
             )}
             {book.url_librivox && (
@@ -309,10 +309,10 @@ export const BookPage: React.FC = () => {
                 href={book.url_librivox}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 hover:text-[#FF9398] transition-colors"
+                className="flex items-center gap-1.5 hover:text-[#FF9398] transition-colors"
               >
                 <span>Ficha en LibriVox.org</span>
-                <ExternalLink className="w-3 h-3 ml-0.5" />
+                <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
               </a>
             )}
           </div>
@@ -321,12 +321,12 @@ export const BookPage: React.FC = () => {
 
       {/* Synopsis Section */}
       {book.description && (
-        <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-800 rounded-3xl space-y-3">
-          <h2 className="text-xs font-mono tracking-widest uppercase text-stone-400 font-semibold">
+        <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-700 rounded-3xl space-y-3">
+          <h2 className="text-xs sm:text-sm font-mono tracking-wider uppercase text-stone-200 font-bold">
             Sinopsis & Contexto Histórico
           </h2>
           <p
-            className={`text-sm sm:text-base text-stone-300 leading-relaxed font-sans font-light whitespace-pre-line ${
+            className={`text-sm sm:text-base text-stone-200 leading-relaxed font-sans font-light whitespace-pre-line ${
               !showFullDesc && book.description.length > 400 ? 'line-clamp-4' : ''
             }`}
           >
@@ -335,7 +335,7 @@ export const BookPage: React.FC = () => {
           {book.description.length > 400 && (
             <button
               onClick={() => setShowFullDesc(!showFullDesc)}
-              className="text-xs font-mono text-[#FF9398] hover:underline cursor-pointer pt-1"
+              className="text-xs sm:text-sm font-mono text-[#FF9398] font-bold hover:underline cursor-pointer pt-1"
             >
               {showFullDesc ? 'Leer menos' : 'Leer descripción completa...'}
             </button>
@@ -344,21 +344,21 @@ export const BookPage: React.FC = () => {
       )}
 
       {/* Chapter Index */}
-      <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-800 rounded-3xl space-y-4">
+      <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-700 rounded-3xl space-y-4">
         <div className="flex items-center justify-between border-b border-stone-800 pb-4">
           <div className="flex items-center gap-2">
-            <ListMusic className="w-4 h-4 text-[#FF9398]" />
-            <h2 className="text-lg font-serif font-medium text-stone-200">
+            <ListMusic className="w-5 h-5 text-[#FF9398]" />
+            <h2 className="text-lg sm:text-xl font-serif font-medium text-stone-100">
               Índice de Capítulos ({sections.length || book.num_sections || 0})
             </h2>
           </div>
-          <span className="text-xs font-mono text-stone-500">
+          <span className="text-xs sm:text-sm font-mono text-stone-300 font-medium">
             Streaming MP3 libre
           </span>
         </div>
 
         {sections.length > 0 ? (
-          <div className="divide-y divide-stone-800/80 border border-stone-800 rounded-2xl overflow-hidden bg-[#0c0a09]">
+          <div className="divide-y divide-stone-800 border border-stone-700 rounded-2xl overflow-hidden bg-[#0c0a09]">
             {sections.map((section, idx) => {
               const isCurrentSection =
                 currentBook?.id === book.id && currentSectionIndex === idx;
@@ -370,7 +370,7 @@ export const BookPage: React.FC = () => {
                   key={section.id || idx}
                   onClick={() => handlePlaySection(idx)}
                   className={`flex items-center justify-between p-3.5 sm:p-4 hover:bg-stone-900 transition-colors cursor-pointer group ${
-                    isCurrentSection ? 'bg-[#FF9398]/10' : ''
+                    isCurrentSection ? 'bg-[#FF9398]/15' : ''
                   }`}
                 >
                   <div className="flex items-center gap-3.5 min-w-0 pr-4">
@@ -379,40 +379,41 @@ export const BookPage: React.FC = () => {
                         e.stopPropagation();
                         handlePlaySection(idx);
                       }}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform cursor-pointer ${
+                      aria-label={`Reproducir pista ${idx + 1}: ${section.title || ''}`}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-transform cursor-pointer ${
                         isCurrentSection
                           ? 'bg-[#FF9398] text-stone-950 scale-105'
-                          : 'bg-stone-800 text-stone-300 group-hover:bg-[#FF9398] group-hover:text-stone-950'
+                          : 'bg-stone-800 text-stone-200 group-hover:bg-[#FF9398] group-hover:text-stone-950'
                       }`}
                     >
                       {isSectionPlaying ? (
-                        <Pause className="w-3.5 h-3.5 fill-current" />
+                        <Pause className="w-4 h-4 fill-current" />
                       ) : (
-                        <Play className="w-3.5 h-3.5 fill-current translate-x-0.5" />
+                        <Play className="w-4 h-4 fill-current translate-x-0.5" />
                       )}
                     </button>
 
                     <div className="min-w-0">
                       <h3
-                        className={`text-sm truncate font-sans ${
-                          isCurrentSection ? 'text-[#FF9398] font-medium' : 'text-stone-200'
+                        className={`text-sm sm:text-base truncate font-sans ${
+                          isCurrentSection ? 'text-[#FF9398] font-semibold' : 'text-stone-100 font-medium'
                         }`}
                       >
                         {section.title || `Capítulo ${idx + 1}`}
                       </h3>
-                      <div className="flex items-center gap-2 text-[11px] text-stone-500 font-mono mt-0.5">
-                        <span>Pista {idx + 1}</span>
+                      <div className="flex items-center gap-2 text-xs text-stone-400 font-mono mt-0.5">
+                        <span className="font-semibold">Pista {idx + 1}</span>
                         {readerName && (
                           <>
                             <span aria-hidden="true">&middot;</span>
-                            <span className="truncate">Voz: {readerName}</span>
+                            <span className="truncate text-stone-300">Voz: {readerName}</span>
                           </>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-xs font-mono text-stone-400 tabular-nums shrink-0">
+                  <div className="text-xs sm:text-sm font-mono text-stone-300 tabular-nums shrink-0 font-medium">
                     {section.playtime ? formatDuration(section.playtime) : ''}
                   </div>
                 </div>
@@ -421,7 +422,7 @@ export const BookPage: React.FC = () => {
           </div>
         ) : (
           <div className="p-8 text-center bg-[#0c0a09] rounded-2xl border border-stone-800">
-            <p className="text-xs font-mono text-stone-400">
+            <p className="text-xs sm:text-sm font-mono text-stone-300">
               Haz clic en &ldquo;Comenzar a escuchar&rdquo; para reproducir la primera pista.
             </p>
           </div>
