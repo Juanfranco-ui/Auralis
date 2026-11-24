@@ -34,7 +34,7 @@ export interface Book {
   url_text_source?: string;
   language: string;
   copyright_year?: string;
-  num_sections: string | number;
+  num_sections?: string | number;
   url_rss?: string;
   url_zip_file?: string;
   url_project?: string;

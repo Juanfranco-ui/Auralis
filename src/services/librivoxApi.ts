@@ -1007,10 +1007,187 @@ export async function fetchAudiobooksFeed(
   return [];
 }
 
+function normalizeCreator(creator: unknown): string {
+  if (typeof creator === 'string') {
+    return creator.trim() || 'Autor Clásico';
+  }
+  if (Array.isArray(creator)) {
+    const joined = creator
+      .filter((c): c is string => typeof c === 'string' && c.trim().length > 0)
+      .map((c) => c.trim())
+      .join(', ');
+    return joined || 'Autor Clásico';
+  }
+  return 'Autor Clásico';
+}
+
+function escapeLuceneQuery(input: string): string {
+  return input.replace(/([+\-&|!(){}[\]^"~*?:\\/])/g, '\\$1');
+}
+
+function extractArchiveIdentifier(book: Partial<Book> & { url_iarchive?: string }): string | undefined {
+  if (book.identifier) return book.identifier;
+  const zipMatch = (book.url_zip_file || '').match(/\/download\/([^/]+)/);
+  if (zipMatch?.[1]) return zipMatch[1];
+  const iaUrlMatch = (book.url_iarchive || '').match(/\/details\/([^/]+)/);
+  if (iaUrlMatch?.[1]) return iaUrlMatch[1];
+  return undefined;
+}
+
+function normalizeIdentifier(rawId?: string): string | undefined {
+  if (!rawId) return undefined;
+  const trimmed = rawId.trim();
+  if (!trimmed) return undefined;
+  const bare = trimmed.replace(/^ia_/, '');
+  return IDENTIFIER_ALIASES[trimmed] || IDENTIFIER_ALIASES[bare] || bare;
+}
+
+function getBookDedupeKeys(book: Partial<Book> & { url_iarchive?: string }): string[] {
+  const keys: string[] = [];
+  if (book.id !== undefined && book.id !== null) {
+    const idStr = String(book.id).trim();
+    if (idStr) {
+      keys.push(`id:${idStr}`);
+      if (IDENTIFIER_ALIASES[idStr]) {
+        keys.push(`ia:${IDENTIFIER_ALIASES[idStr]}`);
+      } else if (idStr.startsWith('ia_')) {
+        const canonicalFromId = normalizeIdentifier(idStr);
+        if (canonicalFromId) keys.push(`ia:${canonicalFromId}`);
+      }
+    }
+  }
+  const rawIdent = extractArchiveIdentifier(book);
+  const canonicalIdent = normalizeIdentifier(rawIdent);
+  if (canonicalIdent) {
+    keys.push(`ia:${canonicalIdent}`);
+  }
+  return keys;
+}
+
+async function searchLibriVoxFeed(
+  q: string,
+  filters: SearchFilters,
+  signal?: AbortSignal
+): Promise<Book[]> {
+  const collected: Book[] = [];
+  const localSeen = new Set<string>();
+
+  const collectBooks = (rawBooks: any[]) => {
+    for (const b of rawBooks) {
+      if (
+        filters.language !== 'all' &&
+        b.language &&
+        !b.language.toLowerCase().includes(filters.language.toLowerCase())
+      ) {
+        continue;
+      }
+      const id = String(b.id);
+      if (!localSeen.has(id)) {
+        localSeen.add(id);
+        const extractedId = extractArchiveIdentifier(b);
+        collected.push({
+          ...b,
+          identifier: extractedId || b.identifier,
+          description: stripHtml(b.description || ''),
+        });
+      }
+    }
+  };
+
+  const lvParams = new URLSearchParams({
+    format: 'json',
+    coverart: '1',
+    limit: '25',
+  });
+
+  if (filters.searchType === 'author') {
+    lvParams.set('author', q);
+  } else {
+    lvParams.set('title', `^${q}`);
+  }
+
+  const lvRes = await fetch(`/api/feed/audiobooks?${lvParams.toString()}`, { signal });
+  const lvContentType = lvRes.headers.get('content-type') || '';
+  if (lvRes.ok && lvContentType.includes('application/json')) {
+    const data = await lvRes.json();
+    if (Array.isArray(data.books)) {
+      collectBooks(data.books);
+    }
+  }
+
+  // If general search and few results, also try author query on LibriVox
+  if (filters.searchType === 'all' && collected.length < 5) {
+    const authorRes = await fetch(
+      `/api/feed/audiobooks?format=json&coverart=1&limit=15&author=${encodeURIComponent(q)}`,
+      { signal }
+    );
+    const authContentType = authorRes.headers.get('content-type') || '';
+    if (authorRes.ok && authContentType.includes('application/json')) {
+      const authData = await authorRes.json();
+      if (Array.isArray(authData.books)) {
+        collectBooks(authData.books);
+      }
+    }
+  }
+
+  return collected;
+}
+
+async function searchArchiveCollection(
+  q: string,
+  filters: SearchFilters,
+  signal?: AbortSignal
+): Promise<Book[]> {
+  const escapedQ = escapeLuceneQuery(q);
+  let iaQuery = `collection:(librivoxaudio) AND (${escapedQ})`;
+  if (filters.language === 'Spanish') {
+    iaQuery += ' AND (language:(Spanish) OR language:(spa))';
+  } else if (filters.language === 'English') {
+    iaQuery += ' AND (language:(English) OR language:(eng))';
+  }
+
+  const iaUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(
+    iaQuery
+  )}&fl[]=identifier,title,creator,description,year,downloads&sort[]=downloads+desc&rows=25&output=json`;
+
+  const res = await fetch(iaUrl, { signal });
+  if (!res.ok) return [];
+
+  const iaData = await res.json();
+  const docs = iaData?.response?.docs || [];
+
+  return docs
+    .filter((doc: any) => Boolean(doc?.identifier))
+    .map((doc: any): Book => {
+      const rawTitle = Array.isArray(doc.title) ? doc.title[0] : doc.title;
+      const rawDesc = Array.isArray(doc.description)
+        ? doc.description.join(' ')
+        : doc.description;
+      const creatorName = normalizeCreator(doc.creator);
+
+      return {
+        id: `ia_${doc.identifier}`,
+        identifier: doc.identifier,
+        title: typeof rawTitle === 'string' && rawTitle.trim() ? rawTitle.trim() : 'Audiolibro',
+        description: stripHtml(typeof rawDesc === 'string' ? rawDesc : ''),
+        language: filters.language === 'Spanish' ? 'Spanish' : 'Multilingual',
+        copyright_year: doc.year ? String(doc.year) : undefined,
+        authors: [
+          {
+            first_name: '',
+            last_name: creatorName,
+          },
+        ],
+        coverart_jpg: `https://archive.org/services/img/${doc.identifier}`,
+        coverart_thumbnail: `https://archive.org/services/img/${doc.identifier}`,
+      };
+    });
+}
+
 // 3. Search Audiobooks (hybrid multi-source search)
 export async function searchAudiobooks(
   filters: SearchFilters,
-  _signal?: AbortSignal
+  signal?: AbortSignal
 ): Promise<Book[]> {
   const q = filters.query.trim();
   if (!q) return [];
@@ -1025,7 +1202,7 @@ export async function searchAudiobooks(
   // Try backend search endpoint first if available in local development (Node/Express runtime)
   if (import.meta.env.DEV) {
     try {
-      const res = await fetch(`/api/search?${params.toString()}`);
+      const res = await fetch(`/api/search?${params.toString()}`, { signal });
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
@@ -1033,13 +1210,25 @@ export async function searchAudiobooks(
           return data.books;
         }
       }
-    } catch {
+    } catch (err: any) {
+      if (err?.name === 'AbortError' || signal?.aborted) {
+        throw err;
+      }
       // Proceed to client multi-search
     }
   }
 
   const results: Book[] = [];
-  const seenIds = new Set<string>();
+  const seenKeys = new Set<string>();
+
+  const pushIfUnique = (book: Book) => {
+    const keys = getBookDedupeKeys(book);
+    if (keys.some((k) => seenKeys.has(k))) return;
+    for (const k of keys) {
+      seenKeys.add(k);
+    }
+    results.push(book);
+  };
 
   // Strategy 0: Instant match from rich curated catalog
   const qLower = q.toLowerCase();
@@ -1061,129 +1250,38 @@ export async function searchAudiobooks(
     }
 
     if (matched) {
-      seenIds.add(b.id);
-      if (b.identifier) seenIds.add(b.identifier);
-      results.push(b);
+      pushIfUnique(b);
     }
   }
 
-  // Strategy A: Query LibriVox feed via proxied /api/feed/audiobooks
-  try {
-    const lvParams = new URLSearchParams({
-      format: 'json',
-      coverart: '1',
-      limit: '25',
-    });
+  // Strategies A (LibriVox feed) & B (Archive.org) in parallel
+  const [lvSettled, iaSettled] = await Promise.allSettled([
+    searchLibriVoxFeed(q, filters, signal),
+    searchArchiveCollection(q, filters, signal),
+  ]);
 
-    if (filters.searchType === 'author') {
-      lvParams.set('author', q);
-    } else if (filters.searchType === 'title') {
-      lvParams.set('title', `^${q}`);
-    } else {
-      lvParams.set('title', `^${q}`);
-    }
-
-    const lvRes = await fetch(`/api/feed/audiobooks?${lvParams.toString()}`);
-    const lvContentType = lvRes.headers.get('content-type') || '';
-    if (lvRes.ok && lvContentType.includes('application/json')) {
-      const data = await lvRes.json();
-      if (Array.isArray(data.books)) {
-        for (const b of data.books) {
-          if (
-            filters.language !== 'all' &&
-            b.language &&
-            !b.language.toLowerCase().includes(filters.language.toLowerCase())
-          ) {
-            continue;
-          }
-          const id = String(b.id);
-          if (!seenIds.has(id)) {
-            seenIds.add(id);
-            results.push({
-              ...b,
-              description: stripHtml(b.description || ''),
-            });
-          }
-        }
-      }
-    }
-
-    // If general search and few results, also try author query on LibriVox
-    if (filters.searchType === 'all' && results.length < 5) {
-      const authorRes = await fetch(
-        `/api/feed/audiobooks?format=json&coverart=1&limit=15&author=${encodeURIComponent(q)}`
-      );
-      const authContentType = authorRes.headers.get('content-type') || '';
-      if (authorRes.ok && authContentType.includes('application/json')) {
-        const authData = await authorRes.json();
-        if (Array.isArray(authData.books)) {
-          for (const b of authData.books) {
-            if (
-              filters.language !== 'all' &&
-              b.language &&
-              !b.language.toLowerCase().includes(filters.language.toLowerCase())
-            ) {
-              continue;
-            }
-            const id = String(b.id);
-            if (!seenIds.has(id)) {
-              seenIds.add(id);
-              results.push({
-                ...b,
-                description: stripHtml(b.description || ''),
-              });
-            }
-          }
-        }
-      }
-    }
-  } catch (e) {
-    console.warn('LibriVox feed search failed, relying on Archive:', e);
+  if (signal?.aborted) {
+    throw signal.reason ?? new DOMException('Aborted', 'AbortError');
   }
 
-  // Strategy B: Internet Archive LibriVox Collection Full-Text Search (Universal CORS)
-  try {
-    let iaQuery = `collection:(librivoxaudio) AND (${q})`;
-    if (filters.language === 'Spanish') {
-      iaQuery += ' AND (language:(Spanish) OR language:(spa))';
-    } else if (filters.language === 'English') {
-      iaQuery += ' AND (language:(English) OR language:(eng))';
+  if (lvSettled.status === 'fulfilled') {
+    for (const book of lvSettled.value) {
+      pushIfUnique(book);
     }
+  } else if (lvSettled.reason?.name === 'AbortError') {
+    throw lvSettled.reason;
+  } else {
+    console.warn('LibriVox feed search failed, relying on Archive:', lvSettled.reason);
+  }
 
-    const iaUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(
-      iaQuery
-    )}&fl[]=identifier,title,creator,description,year,downloads&sort[]=downloads+desc&rows=25&output=json`;
-
-    const res = await fetch(iaUrl);
-    if (res.ok) {
-      const iaData = await res.json();
-      const docs = iaData?.response?.docs || [];
-      for (const doc of docs) {
-        const id = `ia_${doc.identifier}`;
-        if (!seenIds.has(id) && !seenIds.has(doc.identifier)) {
-          seenIds.add(id);
-          results.push({
-            id,
-            identifier: doc.identifier,
-            title: doc.title || 'Audiolibro',
-            description: stripHtml(doc.description || ''),
-            language: filters.language === 'Spanish' ? 'Spanish' : 'Multilingual',
-            copyright_year: doc.year ? String(doc.year) : undefined,
-            num_sections: 1,
-            authors: [
-              {
-                first_name: '',
-                last_name: doc.creator || 'Autor Clásico',
-              },
-            ],
-            coverart_jpg: `https://archive.org/services/img/${doc.identifier}`,
-            coverart_thumbnail: `https://archive.org/services/img/${doc.identifier}`,
-          });
-        }
-      }
+  if (iaSettled.status === 'fulfilled') {
+    for (const book of iaSettled.value) {
+      pushIfUnique(book);
     }
-  } catch (fallbackErr) {
-    console.error('Archive search fallback failed:', fallbackErr);
+  } else if (iaSettled.reason?.name === 'AbortError') {
+    throw iaSettled.reason;
+  } else {
+    console.error('Archive search fallback failed:', iaSettled.reason);
   }
 
   return results;

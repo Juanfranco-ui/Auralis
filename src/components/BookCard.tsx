@@ -25,6 +25,16 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
   const isFav = isFavorite(book.id);
   const coverUrl = getBookCover(book);
   const authorName = getAuthorName(book);
+  const durationLabel =
+    book.totaltime?.trim() ||
+    (book.totaltimesecs && Number(book.totaltimesecs) > 0
+      ? formatDuration(book.totaltimesecs)
+      : '');
+  const hasSections =
+    book.num_sections !== undefined &&
+    book.num_sections !== null &&
+    String(book.num_sections).trim() !== '' &&
+    Number(book.num_sections) > 0;
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -130,15 +140,19 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
 
         {/* Clean unboxed metadata with high contrast */}
         <div className="mt-3 pt-2 border-t border-stone-800 flex items-center justify-between text-xs text-stone-300 font-mono">
-          <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-stone-400" />
-            <span className="tabular-nums">
-              {book.totaltime || formatDuration(book.totaltimesecs)}
-            </span>
-          </div>
-          <div className="flex items-center gap-1 text-stone-300">
-            <span>{book.num_sections || '1'} cap.</span>
-            <span aria-hidden="true">&middot;</span>
+          {durationLabel && (
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3 text-stone-400" />
+              <span className="tabular-nums">{durationLabel}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1 text-stone-300 ml-auto">
+            {hasSections && (
+              <>
+                <span>{book.num_sections} cap.</span>
+                <span aria-hidden="true">&middot;</span>
+              </>
+            )}
             <span className="text-[#FF9398] font-bold">
               {book.language === 'Spanish' ? 'ES' : book.language === 'English' ? 'EN' : 'LIB'}
             </span>
