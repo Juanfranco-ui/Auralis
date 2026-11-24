@@ -84,7 +84,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             <button
               type="button"
               onClick={handleClear}
-              className="p-2 text-stone-300 hover:text-white transition-colors cursor-pointer rounded-lg"
+              className="p-2 text-stone-300 hover:text-white transition-colors rounded-lg"
               title="Limpiar búsqueda"
               aria-label="Limpiar campo de búsqueda"
             >
@@ -95,7 +95,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <button
             type="button"
             onClick={() => setShowFilters(!showFilters)}
-            className={`p-2.5 rounded-xl text-xs sm:text-sm font-mono transition-colors cursor-pointer ${
+            className={`p-2.5 rounded-xl text-xs sm:text-sm font-mono transition-colors ${
               showFilters || language !== 'all' || searchType !== 'all'
                 ? 'bg-[#FF9398]/20 text-[#FF9398] border border-[#FF9398]/50 font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-stone-800 border border-stone-700'
@@ -109,7 +109,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <button
             type="submit"
             disabled={isLoading || !localQuery.trim()}
-            className="p-3 bg-[#FF9398] text-stone-950 rounded-xl hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer font-bold"
+            className="p-3 bg-[#FF9398] text-stone-950 rounded-xl hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-all font-bold"
             title="Buscar"
             aria-label="Ejecutar búsqueda"
           >
@@ -131,7 +131,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchType('all')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     searchType === 'all'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -142,7 +142,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchType('title')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     searchType === 'title'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -153,7 +153,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchType('author')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     searchType === 'author'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -173,7 +173,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setLanguage('all')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     language === 'all'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -184,7 +184,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setLanguage('Spanish')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     language === 'Spanish'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -195,7 +195,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 <button
                   type="button"
                   onClick={() => setLanguage('English')}
-                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors cursor-pointer ${
+                  className={`flex-1 py-2 text-center rounded-lg font-bold transition-colors ${
                     language === 'English'
                       ? 'bg-[#FF9398] text-stone-950'
                       : 'text-stone-300 hover:text-white'
@@ -211,7 +211,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             <button
               type="button"
               onClick={() => handleSubmit()}
-              className="pill-btn coral cursor-pointer text-xs sm:text-sm py-2 px-5 font-bold"
+              className="pill-btn coral text-xs sm:text-sm py-2 px-5 font-bold"
             >
               <span>Aplicar filtros</span>
               <span className="arr">&rarr;</span>
@@ -231,7 +231,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               key={s.label}
               type="button"
               onClick={() => handleSelectSuggestion(s)}
-              className="text-stone-300 hover:text-[#FF9398] transition-colors cursor-pointer font-sans font-medium"
+              className="text-stone-300 hover:text-[#FF9398] transition-colors font-sans font-medium"
             >
               {s.label} &middot;
             </button>

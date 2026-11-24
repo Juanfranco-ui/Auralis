@@ -342,6 +342,9 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
       }
 
       setCurrentBook(targetBook);
+      if (currentBook?.id !== targetBook.id) {
+        setIsExpanded(true);
+      }
       const safeIndex =
         targetBook.sections && targetBook.sections.length > 0
           ? Math.max(0, Math.min(sectionIndex, targetBook.sections.length - 1))
@@ -397,7 +400,7 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
         setIsLoading(false);
       }
     },
-    [playbackRate, volume, isMuted]
+    [currentBook?.id, playbackRate, volume, isMuted]
   );
 
   const togglePlayPause = useCallback(() => {

@@ -22,15 +22,20 @@ import { ManifestoPage } from './pages/ManifestoPage';
 import { BookPage } from './pages/BookPage';
 
 const AppLayout: React.FC = () => {
-  const { currentBook, selectedBookForDetail, closeBookDetail } = useAudioPlayer();
+  const { currentBook, error, selectedBookForDetail, closeBookDetail } = useAudioPlayer();
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
   const [accessibilityModalOpen, setAccessibilityModalOpen] = useState(false);
 
   return (
     <div
-      className={`min-h-screen flex flex-col relative bg-[#0c0a09] ${
-        currentBook ? 'pb-24 sm:pb-30' : 'pb-14'
+      className={`min-h-[100dvh] flex flex-col relative bg-[#0c0a09] ${
+        currentBook ? 'pb-24' : 'pb-14'
       }`}
+      style={{
+        paddingBottom: currentBook
+          ? `calc(${error ? '8rem' : '5rem'} + env(safe-area-inset-bottom, 0px))`
+          : '3.5rem',
+      }}
     >
       {/* Skip to Main Content Link (WCAG 2.4.1 Bypass Blocks) */}
       <a href="#main-content" className="skip-link">
@@ -58,62 +63,41 @@ const AppLayout: React.FC = () => {
       </main>
 
       {/* Footer Colophon */}
-      <footer className="border-t border-stone-800 bg-[#0c0a09] py-14 px-4 text-center text-xs sm:text-sm text-stone-300 space-y-5 relative z-10">
+      <footer className="border-t border-stone-800 bg-[#0c0a09] py-8 px-4 text-center text-xs text-stone-300 space-y-3 relative z-10">
         <div className="flex justify-center">
           <Link to="/" aria-label="Auralis página de inicio">
             <AuralisLogo size="md" withSubtitle={true} />
           </Link>
         </div>
 
-        <nav aria-label="Navegación de pie de página" className="flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm font-mono text-stone-300 font-medium pt-1">
+        <nav aria-label="Navegación de pie de página" className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3 text-xs font-mono text-stone-300">
           <Link to="/" className="hover:text-[#FF9398] transition-colors">
             Catálogo
           </Link>
-          <span aria-hidden="true">&middot;</span>
+          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
           <Link to="/buscar" className="hover:text-[#FF9398] transition-colors">
             Buscador
           </Link>
-          <span aria-hidden="true">&middot;</span>
+          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
           <Link to="/coleccion" className="hover:text-[#FF9398] transition-colors">
             Mi Colección
           </Link>
-          <span aria-hidden="true">&middot;</span>
+          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
           <Link to="/manifiesto" className="hover:text-[#FF9398] transition-colors">
             Manifiesto
           </Link>
-          <span aria-hidden="true">&middot;</span>
+          <span className="hidden sm:inline" aria-hidden="true">&middot;</span>
           <button
             onClick={() => setAccessibilityModalOpen(true)}
-            className="hover:text-[#FF9398] transition-colors inline-flex items-center gap-1 cursor-pointer"
+            className="hover:text-[#FF9398] transition-colors inline-flex items-center gap-1"
           >
             <Type className="w-3.5 h-3.5 text-[#FF9398]" />
             <span>Opciones de Accesibilidad</span>
           </button>
         </nav>
 
-        <p className="font-sans font-light max-w-lg mx-auto text-stone-300 text-xs sm:text-sm leading-relaxed">
-          Audiolibros libres en streaming directo. Grabaciones abiertas de{' '}
-          <a
-            href="https://librivox.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-stone-100 font-medium hover:text-[#FF9398] underline transition-colors"
-          >
-            LibriVox.org
-          </a>{' '}
-          y preservación universal en{' '}
-          <a
-            href="https://archive.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-stone-100 font-medium hover:text-[#FF9398] underline transition-colors"
-          >
-            Internet Archive
-          </a>
-          .
-        </p>
-        <p className="text-xs font-mono tracking-wider uppercase text-stone-400 font-medium">
-          Auralis Audio &middot; Dominio Público &middot; 2026
+        <p className="text-[11px] font-mono text-stone-500">
+          Auralis · Dominio Público · 2026
         </p>
       </footer>
 

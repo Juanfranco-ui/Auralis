@@ -49,7 +49,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="p-2.5 text-stone-200 hover:text-white rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700 transition-colors cursor-pointer"
+            className="p-2.5 text-stone-200 hover:text-white rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-700 transition-colors"
             aria-label="Cerrar modal"
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -138,7 +138,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            className="pill-btn coral text-xs sm:text-sm py-2 px-6 cursor-pointer shadow-md font-bold"
+            className="pill-btn coral text-xs sm:text-sm py-2 px-6 shadow-md font-bold"
           >
             <span>Cerrar</span>
           </button>

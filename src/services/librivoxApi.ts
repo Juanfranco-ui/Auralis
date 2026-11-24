@@ -1,5 +1,207 @@
 import { Book, SearchFilters, Section } from '../types/audiobook';
 
+// Comprehensive HTML entity map for common entities found in LibriVox data
+const HTML_ENTITY_MAP: Record<string, string> = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&apos;': "'",
+  '&nbsp;': ' ',
+  '&copy;': '©',
+  '&reg;': '®',
+  '&trade;': '™',
+  '&mdash;': '—',
+  '&ndash;': '–',
+  '&hellip;': '…',
+  '&middot;': '·',
+  '&laquo;': '«',
+  '&raquo;': '»',
+  '&bull;': '•',
+  '&dagger;': '†',
+  '&Dagger;': '‡',
+  '&permil;': '‰',
+  '&prime;': "'",
+  '&Prime;': '"',
+  '&lsaquo;': '‹',
+  '&rsaquo;': '›',
+  '&euro;': '€',
+  '&pound;': '£',
+  '&yen;': '¥',
+  '&cent;': '¢',
+  '&frac12;': '½',
+  '&frac14;': '¼',
+  '&frac34;': '¾',
+  '&times;': '×',
+  '&divide;': '÷',
+  '&minus;': '−',
+  '&plusmn;': '±',
+  '&sup1;': '¹',
+  '&sup2;': '²',
+  '&sup3;': '³',
+  '&ordf;': 'ª',
+  '&ordm;': 'º',
+  '&iexcl;': '¡',
+  '&iquest;': '¿',
+  '&OElig;': 'Œ',
+  '&oelig;': 'œ',
+  '&Scaron;': 'Š',
+  '&scaron;': 'š',
+  '&Yuml;': 'Ÿ',
+  // Spanish accented characters (most common in LibriVox)
+  '&aacute;': 'á',
+  '&Aacute;': 'Á',
+  '&eacute;': 'é',
+  '&Eacute;': 'É',
+  '&iacute;': 'í',
+  '&Iacute;': 'Í',
+  '&oacute;': 'ó',
+  '&Oacute;': 'Ó',
+  '&uacute;': 'ú',
+  '&Uacute;': 'Ú',
+  '&ntilde;': 'ñ',
+  '&Ntilde;': 'Ñ',
+  '&ccedil;': 'ç',
+  '&Ccedil;': 'Ç',
+  // French/German accented characters
+  '&agrave;': 'à',
+  '&Agrave;': 'À',
+  '&atilde;': 'ã',
+  '&Atilde;': 'Ã',
+  '&aring;': 'å',
+  '&Aring;': 'Å',
+  '&eth;': 'ð',
+  '&ETH;': 'Ð',
+  '&thorn;': 'þ',
+  '&THORN;': 'Þ',
+  '&ouml;': 'ö',
+  '&Ouml;': 'Ö',
+  '&uuml;': 'ü',
+  '&Uuml;': 'Ü',
+  '&auml;': 'ä',
+  '&Auml;': 'Ä',
+  '&euml;': 'ë',
+  '&Euml;': 'Ë',
+  '&iuml;': 'ï',
+  '&Iuml;': 'Ï',
+  '&oslash;': 'ø',
+  '&Oslash;': 'Ø',
+  '&cacute;': 'ć',
+  '&Cacute;': 'Ć',
+  '&dcaron;': 'ď',
+  '&Dcaron;': 'Ď',
+  '&ecaron;': 'ě',
+  '&Ecaron;': 'Ě',
+  '&hacek;': 'ˇ',
+  '&circ;': 'ˆ',
+  '&tilde;': '˜',
+  '&macr;': '¯',
+  '&breve;': '˘',
+  '&ogon;': '˛',
+  '&ring;': '˚',
+  '&dblac;': '˝',
+  '&not;': '¬',
+  '&sub;': '⊂',
+  '&sup;': '⊃',
+  '&nsub;': '⊄',
+  '&sim;': '∼',
+  '&cong;': '≅',
+  '&ne;': '≠',
+  '&equiv;': '≡',
+  '&le;': '≤',
+  '&ge;': '≥',
+  '&infin;': '∞',
+  '&ang;': '∠',
+  '&perp;': '⊥',
+  '&sdot;': '⋅',
+  '&alpha;': 'α',
+  '&beta;': 'β',
+  '&gamma;': 'γ',
+  '&delta;': 'δ',
+  '&epsilon;': 'ε',
+  '&zeta;': 'ζ',
+  '&eta;': 'η',
+  '&theta;': 'θ',
+  '&iota;': 'ι',
+  '&kappa;': 'κ',
+  '&lambda;': 'λ',
+  '&mu;': 'μ',
+  '&nu;': 'ν',
+  '&xi;': 'ξ',
+  '&pi;': 'π',
+  '&rho;': 'ρ',
+  '&sigma;': 'σ',
+  '&tau;': 'τ',
+  '&upsilon;': 'υ',
+  '&phi;': 'φ',
+  '&chi;': 'χ',
+  '&psi;': 'ψ',
+  '&omega;': 'ω',
+  '&Alpha;': 'Α',
+  '&Beta;': 'Β',
+  '&Gamma;': 'Γ',
+  '&Delta;': 'Δ',
+  '&Epsilon;': 'Ε',
+  '&Zeta;': 'Ζ',
+  '&Eta;': 'Η',
+  '&Theta;': 'Θ',
+  '&Iota;': 'Ι',
+  '&Kappa;': 'Κ',
+  '&Lambda;': 'Λ',
+  '&Mu;': 'Μ',
+  '&Nu;': 'Ν',
+  '&Xi;': 'Ξ',
+  '&Pi;': 'Π',
+  '&Rho;': 'Ρ',
+  '&Sigma;': 'Σ',
+  '&Tau;': 'Τ',
+  '&Upsilon;': 'Υ',
+  '&Phi;': 'Φ',
+  '&Chi;': 'Χ',
+  '&Psi;': 'Ψ',
+  '&Omega;': 'Ω',
+};
+
+// Decode HTML entities in plain text (e.g. &oacute; → ó, &amp; → &)
+// Uses a comprehensive entity map + numeric entity decoding for reliability
+export function decodeHtmlEntities(text: string = ''): string {
+  if (!text) return '';
+
+  let result = text;
+
+  // LibriVox API sometimes returns entities terminated with backslash instead of semicolon
+  // e.g. "&oacute\" instead of "&oacute;" — normalize them first
+  result = result.replace(/&([a-zA-Z]+)\\/g, '&$1;');
+
+  // First, decode numeric entities: &#123; and &#x1A;
+  result = result.replace(/&#(\d+);/g, (_, d) => {
+    const code = parseInt(d, 10);
+    return (code >= 32 && code <= 65535) ? String.fromCharCode(code) : '';
+  });
+  result = result.replace(/&#x([0-9a-fA-F]+);/g, (_, h) => {
+    const code = parseInt(h, 16);
+    return (code >= 32 && code <= 65535) ? String.fromCharCode(code) : '';
+  });
+
+  // Then decode named entities from our comprehensive map
+  // Sort by length (longest first) to avoid partial matches
+  const sortedEntities = Object.keys(HTML_ENTITY_MAP).sort((a, b) => b.length - a.length);
+  for (const entity of sortedEntities) {
+    result = result.split(entity).join(HTML_ENTITY_MAP[entity]);
+  }
+
+  // Finally, clean up any remaining malformed entities (e.g. "&o" or "&\")
+  // These are incomplete entity references that the API sometimes returns
+  // Replace any & followed by non-alphanumeric chars (except space) with just the char after &
+  result = result.replace(/&([^\w#;])/g, '$1');
+  // Replace any & followed by partial entity name (no semicolon) at end of string
+  result = result.replace(/&[a-zA-Z]+$/, '');
+  // Replace any & followed by partial entity name (no semicolon) before a space or punctuation
+  result = result.replace(/&[a-zA-Z]+(?=[\s.,;:!?"'()])/g, '');
+
+  return result;
+}
+
 // Clean text helper to strip any residual HTML markup safely
 export function stripHtml(html: string = ''): string {
   if (!html) return '';
@@ -664,13 +866,22 @@ async function fetchChaptersFromArchive(identifier: string, existingBook?: Parti
     if (mp3Files.length === 0) return null;
 
     // Deduplicate multiple bitrates (e.g. 64kbps and standard VBR), prefer 64kbps for faster streaming
+    // However, prefer entries with complete titles — Archive.org sometimes stores truncated titles
+    // (with broken HTML entities like "&oacute\") on the VBR/64kb versions while the 128kb version
+    // has the full title. Always pick the entry with the longest title as the best one.
     const trackMap = new Map<string, any>();
     for (const f of mp3Files) {
       const baseKey = f.name
         .replace(/_64kb\.mp3$/i, '')
         .replace(/_128kb\.mp3$/i, '')
         .replace(/\.mp3$/i, '');
-      if (!trackMap.has(baseKey) || f.name.toLowerCase().includes('_64kb.mp3') || f.format === '64Kbps MP3') {
+      const existing = trackMap.get(baseKey);
+      const preferNew =
+        !existing ||
+        f.name.toLowerCase().includes('_64kb.mp3') ||
+        f.format === '64Kbps MP3' ||
+        (f.title && existing?.title && f.title.length > existing.title.length);
+      if (preferNew) {
         trackMap.set(baseKey, f);
       }
     }

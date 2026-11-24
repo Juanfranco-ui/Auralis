@@ -128,9 +128,6 @@ export const SearchPage: React.FC = () => {
       />
 
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
-          ÍNDICE COMPLETO &middot; BÚSQUEDA CRUZADA
-        </div>
         <h1 className="text-3xl sm:text-5xl font-serif font-light text-stone-100">
           Buscador del Archivo
         </h1>
@@ -148,15 +145,12 @@ export const SearchPage: React.FC = () => {
 
       {/* Quick Search Chips */}
       <div className="space-y-3">
-        <div className="text-xs font-mono uppercase tracking-wider text-stone-300 text-center font-bold">
-          Búsquedas recomendadas:
-        </div>
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {quickPills.map((pill) => (
             <button
               key={pill}
               onClick={() => handleQuickTagClick(pill)}
-              className="px-4 py-2 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full text-xs sm:text-sm font-sans font-medium transition-all cursor-pointer shadow-sm"
+              className="px-4 py-2 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full text-xs sm:text-sm font-sans font-medium transition-all shadow-sm"
             >
               {pill}
             </button>
@@ -184,13 +178,13 @@ export const SearchPage: React.FC = () => {
                   setHasSearched(false);
                   setSearchResults([]);
                 }}
-                className="text-[#FF9398] font-bold hover:underline cursor-pointer"
+                className="text-[#FF9398] font-bold hover:underline"
               >
                 Limpiar búsqueda
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
               {searchResults.map((book) => (
                 <BookCard
                   key={book.id}
@@ -201,7 +195,7 @@ export const SearchPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 bg-[#12100e] rounded-3xl border border-stone-700 p-8 space-y-3 max-w-md mx-auto">
+          <div className="text-center py-20 bg-[#12100e] rounded-3xl p-8 space-y-3 max-w-md mx-auto">
             <SearchIcon className="w-10 h-10 mx-auto text-stone-500" />
             <h3 className="text-lg font-serif font-medium text-stone-100">
               Sin coincidencias para &ldquo;{searchFilters.query}&rdquo;
@@ -231,7 +225,7 @@ export const SearchPage: React.FC = () => {
                 <button
                   key={c.id}
                   onClick={() => setActiveCategory(c.id)}
-                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer font-medium ${
+                  className={`px-4 py-2 rounded-xl transition-all font-medium ${
                     activeCategory === c.id
                       ? 'bg-[#FF9398] text-stone-950 font-bold'
                       : 'bg-stone-900 text-stone-300 hover:text-white border border-stone-700'
@@ -243,7 +237,7 @@ export const SearchPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
             {filteredCurated.map((book) => (
               <BookCard
                 key={book.id}

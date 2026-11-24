@@ -10,8 +10,15 @@ interface BookCardProps {
 }
 
 export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
-  const { currentBook, isPlaying, playBook, togglePlayPause, toggleFavorite, isFavorite } =
-    useAudioPlayer();
+  const {
+    currentBook,
+    isPlaying,
+    playBook,
+    togglePlayPause,
+    toggleFavorite,
+    isFavorite,
+    setIsExpanded,
+  } = useAudioPlayer();
 
   const [imageError, setImageError] = useState(false);
   const isCurrentBook = currentBook?.id === book.id;
@@ -22,6 +29,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isCurrentBook) {
+      setIsExpanded(true);
       togglePlayPause();
     } else {
       playBook(book);
@@ -47,7 +55,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
       tabIndex={0}
       role="button"
       aria-label={`Ver detalles de ${book.title} de ${authorName}`}
-      className="group relative flex flex-col bg-[#12100e] border border-stone-700/80 hover:border-[#FF9398] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/80 focus-visible:ring-2 focus-visible:ring-[#FF9398] focus-visible:outline-none max-w-sm sm:max-w-none mx-auto w-full"
+      className="group relative flex flex-col bg-[#12100e] border border-stone-700/80 hover:border-[#FF9398] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/60 focus-visible:ring-2 focus-visible:ring-[#FF9398] focus-visible:outline-none max-w-sm sm:max-w-none mx-auto w-full"
     >
       {/* Cover Image slot with accessible fallback */}
       <div className="relative aspect-[3/4] w-full bg-[#0a0908] overflow-hidden flex items-center justify-center">
@@ -82,7 +90,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
         <button
           onClick={handleFavoriteClick}
           aria-label={isFav ? `Quitar ${book.title} de favoritos` : `Guardar ${book.title} en favoritos`}
-          className={`absolute top-2.5 right-2.5 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-[#FF9398] cursor-pointer ${
+          className={`absolute top-2.5 right-2.5 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-[#FF9398] ${
             isFav
               ? 'bg-[#FF9398] text-stone-950 shadow-lg'
               : 'bg-stone-950/80 text-stone-200 hover:text-white hover:bg-stone-900 border border-stone-700/60'
@@ -96,7 +104,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
           <button
             onClick={handlePlayClick}
             aria-label={isCurrentBook && isPlaying ? `Pausar ${book.title}` : `Reproducir ${book.title}`}
-            className="pointer-events-auto w-14 h-14 rounded-full bg-[#FF9398] text-stone-950 flex items-center justify-center shadow-2xl transform group-hover:scale-105 active:scale-95 transition-all hover:bg-white cursor-pointer font-bold"
+            className="pointer-events-auto w-14 h-14 rounded-full bg-[#FF9398] text-stone-950 flex items-center justify-center shadow-2xl transform group-hover:scale-105 active:scale-95 transition-all hover:bg-white font-bold"
           >
             {isCurrentBook && isPlaying ? (
               <Pause className="w-6 h-6 fill-current" />
@@ -116,20 +124,20 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
       </div>
 
       {/* Card Content & Metadata */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-[#12100e]">
+      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-[#12100e]">
         <div>
-          <h3 className="font-serif font-medium text-stone-100 text-base sm:text-lg leading-snug line-clamp-2 group-hover:text-[#FF9398] transition-colors">
+          <h3 className="font-serif font-medium text-stone-100 text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-[#FF9398] transition-colors">
             {book.title}
           </h3>
-          <p className="text-xs sm:text-sm text-stone-300 font-sans mt-1 line-clamp-1 font-normal tracking-wide">
+          <p className="text-xs text-stone-300 font-sans mt-0.5 line-clamp-1">
             {authorName}
           </p>
         </div>
 
         {/* Clean unboxed metadata with high contrast */}
-        <div className="mt-4 pt-3 border-t border-stone-800 flex items-center justify-between text-xs text-stone-300 font-mono font-medium">
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-stone-400" />
+        <div className="mt-3 pt-2 border-t border-stone-800 flex items-center justify-between text-xs text-stone-300 font-mono">
+          <div className="flex items-center gap-1">
+            <Clock className="w-3 h-3 text-stone-400" />
             <span className="tabular-nums">
               {book.totaltime || formatDuration(book.totaltimesecs)}
             </span>

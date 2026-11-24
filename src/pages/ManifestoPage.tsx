@@ -36,9 +36,6 @@ export const ManifestoPage: React.FC = () => {
         <div className="flex justify-center mb-2">
           <AuralisInsignia size={56} />
         </div>
-        <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
-          MANIFIESTO EDITORIAL &middot; FILOSOFÍA ABIERTA
-        </div>
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-light text-stone-100 tracking-tight leading-[1.1]">
           La palabra escrita convertida en <span className="italic text-[#FF9398]">voz imperecedera</span>.
         </h1>
@@ -48,7 +45,7 @@ export const ManifestoPage: React.FC = () => {
       </div>
 
       {/* Main Narrative Card */}
-      <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-700 rounded-3xl space-y-8 text-stone-200 font-sans font-normal text-base sm:text-lg leading-relaxed shadow-xl">
+      <div className="p-6 sm:p-10 bg-[#12100e] rounded-3xl space-y-8 text-stone-200 font-sans font-normal text-base sm:text-lg leading-relaxed">
         <p>
           En una era donde los muros de pago, la publicidad invasiva y los algoritmos de recomendación encierran la cultura detrás de suscripciones mensuales, <strong className="text-white font-medium">Auralis</strong> nace como un tributo a la libertad del conocimiento.
         </p>
@@ -67,8 +64,8 @@ export const ManifestoPage: React.FC = () => {
 
       {/* Pillars Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-700 rounded-3xl space-y-3">
-          <div className="flex items-center gap-3 text-[#FF9398] font-mono text-base uppercase tracking-wider font-bold">
+        <div className="p-6 sm:p-8 bg-[#12100e] rounded-3xl space-y-3">
+          <div className="flex items-center gap-3 text-[#FF9398] font-mono text-sm font-semibold">
             <Globe className="w-5 h-5 shrink-0" />
             <span>Project Gutenberg</span>
           </div>
@@ -85,8 +82,8 @@ export const ManifestoPage: React.FC = () => {
           </a>
         </div>
 
-        <div className="p-6 sm:p-8 bg-[#12100e] border border-stone-700 rounded-3xl space-y-3">
-          <div className="flex items-center gap-3 text-[#FF9398] font-mono text-base uppercase tracking-wider font-bold">
+        <div className="p-6 sm:p-8 bg-[#12100e] rounded-3xl space-y-3">
+          <div className="flex items-center gap-3 text-[#FF9398] font-mono text-sm font-semibold">
             <ShieldCheck className="w-5 h-5 shrink-0" />
             <span>Internet Archive</span>
           </div>
@@ -105,11 +102,7 @@ export const ManifestoPage: React.FC = () => {
       </div>
 
       {/* Architecture and Privacy Section */}
-      <div className="p-6 sm:p-8 bg-[#0c0a09] border border-stone-700 rounded-3xl space-y-4">
-        <div className="flex items-center gap-2 text-xs sm:text-sm font-mono tracking-wider text-[#FF9398] uppercase font-bold">
-          <Sparkles className="w-4 h-4" />
-          <span>Privacidad & Ausencia de Rastreo</span>
-        </div>
+      <div className="p-6 sm:p-8 bg-[#0c0a09] rounded-3xl space-y-4">
         <h3 className="text-xl sm:text-2xl font-serif text-stone-100">
           Diseñado para el oyente, no para la vigilancia.
         </h3>
@@ -120,14 +113,14 @@ export const ManifestoPage: React.FC = () => {
         <div className="pt-4 flex flex-wrap gap-4">
           <Link
             to="/buscar"
-            className="pill-btn coral text-xs sm:text-sm py-2.5 px-6 cursor-pointer font-bold"
+            className="pill-btn coral text-xs sm:text-sm py-2.5 px-6 font-bold"
           >
             <span>Comenzar a Escuchar</span>
             <span className="arr">&rarr;</span>
           </Link>
           <Link
             to="/"
-            className="pill-btn outline text-xs sm:text-sm py-2.5 px-6 cursor-pointer font-bold"
+            className="pill-btn outline text-xs sm:text-sm py-2.5 px-6 font-bold"
           >
             <span>Ver Catálogo Editorial</span>
             <span className="arr">&rarr;</span>

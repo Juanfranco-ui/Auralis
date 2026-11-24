@@ -26,7 +26,8 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
   onSelectBook,
   onExploreClick,
 }) => {
-  const { history, favorites, bookmarks, playBook, removeBookmark } = useAudioPlayer();
+  const { currentBook, history, favorites, bookmarks, playBook, removeBookmark, setIsExpanded } =
+    useAudioPlayer();
   const [activeSubTab, setActiveSubTab] = useState<'history' | 'favorites' | 'bookmarks'>(
     'history'
   );
@@ -36,10 +37,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
       {/* Header Lockup */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-stone-800 pb-6">
         <div>
-          <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
-            REGISTRO PERSONAL
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-light text-stone-100 mt-1">
+          <h2 className="text-3xl sm:text-4xl font-serif font-light text-stone-100">
             Mi Colección
           </h2>
           <p className="text-sm sm:text-base text-stone-300 font-sans font-light mt-1">
@@ -51,7 +49,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
         <div className="flex items-center gap-2 p-1.5 bg-[#12100e] border border-stone-700 rounded-2xl self-start sm:self-auto text-xs sm:text-sm font-mono">
           <button
             onClick={() => setActiveSubTab('history')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all cursor-pointer font-bold ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all font-bold ${
               activeSubTab === 'history'
                 ? 'bg-[#FF9398] text-stone-950 shadow-md'
                 : 'text-stone-300 hover:text-white'
@@ -62,7 +60,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
           </button>
           <button
             onClick={() => setActiveSubTab('favorites')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all cursor-pointer font-bold ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all font-bold ${
               activeSubTab === 'favorites'
                 ? 'bg-[#FF9398] text-stone-950 shadow-md'
                 : 'text-stone-300 hover:text-white'
@@ -73,7 +71,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
           </button>
           <button
             onClick={() => setActiveSubTab('bookmarks')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all cursor-pointer font-bold ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all font-bold ${
               activeSubTab === 'bookmarks'
                 ? 'bg-[#FF9398] text-stone-950 shadow-md'
                 : 'text-stone-300 hover:text-white'
@@ -101,11 +99,11 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                 return (
                   <div
                     key={book.id}
-                    className="p-5 bg-[#12100e] border border-stone-700 rounded-2xl hover:border-[#FF9398] transition-all flex gap-4 group shadow-md"
+                    className="p-5 bg-[#12100e] rounded-2xl hover:bg-stone-900 transition-all flex gap-4 group"
                   >
                     <div
                       onClick={() => onSelectBook(book)}
-                      className="w-22 h-30 bg-[#0c0a09] rounded-xl overflow-hidden shrink-0 border border-stone-700 cursor-pointer shadow-md"
+                      className="w-22 h-30 bg-[#0c0a09] rounded-xl overflow-hidden shrink-0 border border-stone-700 shadow-md"
                     >
                       {coverUrl ? (
                         <img
@@ -125,7 +123,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                       <div>
                         <h3
                           onClick={() => onSelectBook(book)}
-                          className="font-serif font-medium text-stone-100 text-base truncate hover:text-[#FF9398] cursor-pointer transition-colors"
+                          className="font-serif font-medium text-stone-100 text-base truncate hover:text-[#FF9398] transition-colors"
                         >
                           {book.title}
                         </h3>
@@ -151,10 +149,11 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                             {formatPlayerTime(item.currentTime)}
                           </span>
                           <button
-                            onClick={() =>
+                            onClick={() => {
+                              if (currentBook?.id === book.id) setIsExpanded(true);
                               playBook(book, item.currentSectionIndex, item.currentTime)
-                            }
-                            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FF9398] text-stone-950 font-bold rounded-lg transition-transform hover:scale-105 cursor-pointer text-xs"
+                            }}
+                            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FF9398] text-stone-950 font-bold rounded-lg transition-transform hover:scale-105 text-xs"
                           >
                             <Play className="w-3.5 h-3.5 fill-current" />
                             <span>Reanudar</span>
@@ -177,7 +176,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
               </p>
               <button
                 onClick={onExploreClick}
-                className="pill-btn coral text-xs sm:text-sm py-2 px-5 cursor-pointer font-bold inline-flex"
+                className="pill-btn coral text-xs sm:text-sm py-2 px-5 font-bold inline-flex"
               >
                 <span>Explorar catálogo</span>
                 <span className="arr">&rarr;</span>
@@ -211,7 +210,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
               </p>
               <button
                 onClick={onExploreClick}
-                className="pill-btn coral text-xs sm:text-sm py-2 px-5 cursor-pointer font-bold inline-flex"
+                className="pill-btn coral text-xs sm:text-sm py-2 px-5 font-bold inline-flex"
               >
                 <span>Descubrir audiolibros</span>
                 <span className="arr">&rarr;</span>
@@ -255,10 +254,11 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                           const matchingBook = history.find((h) => h.book.id === bm.bookId)?.book ||
                             favorites.find((f) => f.id === bm.bookId);
                           if (matchingBook) {
+                            if (currentBook?.id === matchingBook.id) setIsExpanded(true);
                             playBook(matchingBook, bm.sectionIndex, bm.timestamp);
                           }
                         }}
-                        className="text-xs sm:text-sm font-mono text-[#FF9398] font-bold hover:underline cursor-pointer flex items-center gap-1"
+                        className="text-xs sm:text-sm font-mono text-[#FF9398] font-bold hover:underline flex items-center gap-1"
                       >
                         <span>Escuchar desde este momento</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
 
                   <button
                     onClick={() => removeBookmark(bm.id)}
-                    className="p-2.5 text-stone-400 hover:text-rose-400 rounded-xl hover:bg-stone-900 transition-colors cursor-pointer"
+                    className="p-2.5 text-stone-400 hover:text-rose-400 rounded-xl hover:bg-stone-900 transition-colors"
                     title="Eliminar marcador"
                     aria-label="Eliminar marcador"
                   >

@@ -85,7 +85,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-stone-300 hover:text-white rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-800 transition-colors cursor-pointer"
+            className="p-2 text-stone-300 hover:text-white rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-800 transition-colors"
             aria-label="Cerrar ventana de accesibilidad"
           >
             <X className="w-5 h-5" />
@@ -104,7 +104,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
               {fontSize !== 'normal' && (
                 <button
                   onClick={resetFontSize}
-                  className="text-xs text-[#FF9398] hover:underline flex items-center gap-1 cursor-pointer font-mono"
+                  className="text-xs text-[#FF9398] hover:underline flex items-center gap-1 font-mono"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Restablecer</span>
@@ -119,7 +119,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
                   <button
                     key={opt.id}
                     onClick={() => setFontSize(opt.id)}
-                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between ${
                       isSelected
                         ? 'bg-[#FF9398]/15 border-[#FF9398] text-[#FF9398] shadow-md ring-1 ring-[#FF9398]'
                         : 'bg-[#0c0a09] border-stone-800 text-stone-300 hover:border-stone-700 hover:bg-stone-900'
@@ -160,7 +160,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
                 role="switch"
                 aria-checked={highContrast}
                 onClick={toggleHighContrast}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FF9398] ${
+                className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FF9398] ${
                   highContrast ? 'bg-[#FF9398]' : 'bg-stone-800'
                 }`}
               >
@@ -196,7 +196,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
                 role="switch"
                 aria-checked={reducedMotion}
                 onClick={toggleReducedMotion}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FF9398] ${
+                className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FF9398] ${
                   reducedMotion ? 'bg-[#FF9398]' : 'bg-stone-800'
                 }`}
               >
@@ -218,7 +218,7 @@ export const AccessibilityModal: React.FC<AccessibilityModalProps> = ({
           </span>
           <button
             onClick={onClose}
-            className="pill-btn coral text-xs py-2 px-5 cursor-pointer shadow-md"
+            className="pill-btn coral text-xs py-2 px-5 shadow-md"
           >
             <span>Listo</span>
           </button>

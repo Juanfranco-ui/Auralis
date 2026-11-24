@@ -140,7 +140,7 @@ export const CatalogPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-10">
       <SeoHead
         title="Auralis · Audiolibros LibriVox de Dominio Público"
         description="Escucha decenas de audiolibros de literatura universal gratis en español e inglés directamente desde LibriVox e Internet Archive. Sin muros de pago."
@@ -156,21 +156,18 @@ export const CatalogPage: React.FC = () => {
 
       {/* Editorial Statement Strip */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-6 sm:p-10 bg-[#12100e] border border-stone-700 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
-          <div className="max-w-2xl space-y-2">
-            <div className="text-xs font-mono tracking-wider text-[#FF9398] uppercase font-bold">
-              EDITORIAL &middot; PROYECTO ABIERTO
-            </div>
-            <p className="text-lg sm:text-xl font-serif font-light text-stone-100 leading-relaxed">
-              «Las voces de miles de lectores alrededor del mundo convierten los textos silenciosos de Gutenberg en memorias sonoras imperecederas.»
+        <div className="p-4 sm:p-6 bg-[#12100e] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="max-w-2xl">
+            <p className="text-sm sm:text-base font-serif font-light text-stone-100 leading-relaxed">
+              «Las voces de miles de lectores convierten los textos de Gutenberg en memorias sonoras.»
             </p>
           </div>
-          <div className="shrink-0 flex items-center gap-3">
+          <div className="shrink-0">
             <button
               onClick={() => navigate('/buscar')}
-              className="pill-btn coral text-xs sm:text-sm py-2.5 px-5 cursor-pointer shadow-md font-bold"
+              className="pill-btn coral text-xs py-2 px-4 shadow-md font-bold"
             >
-              <span>Consultar Todo el Archivo</span>
+              <span>Todo el archivo</span>
               <span className="arr">&rarr;</span>
             </button>
           </div>
@@ -178,18 +175,18 @@ export const CatalogPage: React.FC = () => {
       </div>
 
       {/* Featured Catalog Area */}
-      <section id="catalogo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-mt-24">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-stone-800 pb-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] uppercase tracking-wider font-bold">
-              <Sparkles className="w-4 h-4" />
-              <span>Colección Seleccionada &middot; {featuredBooks.length} Obras Disponibles</span>
+      <section id="catalogo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 scroll-mt-20">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-stone-800 pb-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] font-bold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{featuredBooks.length} obras disponibles</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif font-light text-stone-100">
-              Historias & Clásicos del Archivo
+            <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-100">
+              Historias del Archivo
             </h2>
-            <p className="text-sm sm:text-base text-stone-300 font-sans font-light max-w-xl">
-              Explora una selección de literatura española e historias universales con grabaciones completas en alta definición y sin cortes.
+            <p className="text-xs sm:text-sm text-stone-300 font-sans font-light max-w-lg">
+              Literatura española e historias universales con grabaciones completas.
             </p>
           </div>
 
@@ -227,7 +224,7 @@ export const CatalogPage: React.FC = () => {
                 <button
                   key={lang.id}
                   onClick={() => setLanguageFilter(lang.id as any)}
-                  className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium ${
+                  className={`px-3.5 py-1.5 rounded-lg transition-all font-medium ${
                     languageFilter === lang.id
                       ? 'bg-[#FF9398] text-stone-950 font-bold'
                       : 'text-stone-300 hover:text-white'
@@ -247,7 +244,7 @@ export const CatalogPage: React.FC = () => {
           <button
             type="button"
             onClick={() => scrollCategories('left')}
-            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 mr-2 transition-all cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 mr-2 transition-all shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
             title="Desplazar categorías hacia la izquierda"
             aria-label="Desplazar categorías hacia la izquierda"
           >
@@ -276,7 +273,7 @@ export const CatalogPage: React.FC = () => {
                   setExploreCategory(cat.id);
                   setShowAllBooks(true);
                 }}
-                className={`px-4 py-2.5 rounded-xl transition-all cursor-pointer whitespace-nowrap border font-medium ${
+                className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap border font-medium ${
                   exploreCategory === cat.id
                     ? 'bg-[#FF9398] text-stone-950 font-bold border-[#FF9398] shadow-md'
                     : 'bg-[#12100e] text-stone-300 border-stone-700 hover:border-stone-500 hover:text-white'
@@ -291,7 +288,7 @@ export const CatalogPage: React.FC = () => {
           <button
             type="button"
             onClick={() => scrollCategories('right')}
-            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 ml-2 transition-all cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[#12100e] border border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 hover:border-stone-500 shrink-0 ml-2 transition-all shadow-md focus-visible:ring-2 focus-visible:ring-[#FF9398]"
             title="Desplazar categorías hacia la derecha"
             aria-label="Desplazar categorías hacia la derecha"
           >
@@ -300,35 +297,35 @@ export const CatalogPage: React.FC = () => {
         </div>
 
         {/* Counter notification */}
-        <div className="flex items-center justify-between text-xs sm:text-sm font-mono text-stone-300 pt-1 font-medium">
+        <div className="flex items-center justify-between text-xs font-mono text-stone-300 pt-1">
           <span>
-            Mostrando <strong className="text-white font-bold">{visibleBooks.length}</strong> de <strong className="text-white font-bold">{filteredFeaturedBooks.length}</strong> historias cargadas
+            {visibleBooks.length} de {filteredFeaturedBooks.length} obras
           </span>
 
           {isDefaultView && (
             <button
               onClick={() => setShowAllBooks(!showAllBooks)}
-              className="text-[#FF9398] font-bold hover:underline cursor-pointer flex items-center gap-1"
+              className="text-[#FF9398] font-bold hover:underline"
             >
-              <span>{showAllBooks ? 'Ver vista compacta (15)' : `Ver todo el catálogo (${filteredFeaturedBooks.length})`}</span>
+              {showAllBooks ? 'Vista compacta' : `Ver todo (${filteredFeaturedBooks.length})`}
             </button>
           )}
         </div>
 
         {/* Grid of Books */}
         {loadingExplore ? (
-          <div className="py-24 flex flex-col items-center justify-center text-stone-300 space-y-3 font-mono text-sm">
-            <Loader2 className="w-8 h-8 animate-spin text-[#FF9398]" />
-            <p>Cargando catálogo editorial...</p>
+          <div className="py-16 flex flex-col items-center justify-center text-stone-300 space-y-2 font-mono text-sm">
+            <Loader2 className="w-6 h-6 animate-spin text-[#FF9398]" />
+            <p>Cargando catálogo...</p>
           </div>
         ) : visibleBooks.length === 0 ? (
-          <div className="py-20 text-center bg-[#12100e] rounded-3xl border border-stone-700 p-8 space-y-3 max-w-md mx-auto">
-            <BookOpen className="w-10 h-10 mx-auto text-stone-500" />
-            <h3 className="text-lg font-serif font-medium text-stone-100">
-              No se encontraron historias con estos filtros
+          <div className="py-12 text-center bg-[#12100e] rounded-2xl border border-stone-700 p-6 space-y-2 max-w-sm mx-auto">
+            <BookOpen className="w-8 h-8 mx-auto text-stone-500" />
+            <h3 className="text-base font-serif font-medium text-stone-100">
+              No se encontraron resultados
             </h3>
-            <p className="text-sm text-stone-300 font-sans">
-              Prueba cambiando la categoría, el idioma o limpiando el texto de búsqueda.
+            <p className="text-xs text-stone-300 font-sans">
+              Cambia la categoría, el idioma o el texto de búsqueda.
             </p>
             <button
               onClick={() => {
@@ -336,13 +333,13 @@ export const CatalogPage: React.FC = () => {
                 setLanguageFilter('all');
                 setFilterText('');
               }}
-              className="mt-2 text-sm text-[#FF9398] font-mono font-bold hover:underline cursor-pointer"
+              className="mt-1 text-xs text-[#FF9398] font-mono font-bold hover:underline"
             >
               Restablecer filtros
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
             {visibleBooks.map((book) => (
               <BookCard
                 key={book.id}
@@ -355,13 +352,13 @@ export const CatalogPage: React.FC = () => {
 
         {/* Button to show all books when truncated in initial view */}
         {isDefaultView && !showAllBooks && remainingCount > 0 && (
-          <div className="pt-4 flex justify-center">
+          <div className="pt-3 flex justify-center">
             <button
               onClick={() => setShowAllBooks(true)}
-              className="group px-7 py-4 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-100 rounded-2xl text-xs sm:text-sm font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
+              className="group px-5 py-3 bg-[#12100e] hover:bg-stone-900 border border-stone-700 hover:border-[#FF9398] text-stone-100 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all"
             >
-              <span>Ver todas las historias disponibles (+{remainingCount} más)</span>
-              <ChevronDown className="w-4 h-4 text-[#FF9398] group-hover:translate-y-0.5 transition-transform" />
+              <span>Ver todas (+{remainingCount})</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#FF9398] group-hover:translate-y-0.5 transition-transform" />
             </button>
           </div>
         )}
@@ -369,28 +366,28 @@ export const CatalogPage: React.FC = () => {
 
       {/* Recent from LibriVox Feed */}
       {feedBooks.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-6">
-          <div className="flex items-center justify-between border-b border-stone-800 pb-5">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 pt-4">
+          <div className="flex items-center justify-between border-b border-stone-800 pb-3">
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] uppercase tracking-wider font-bold">
-                <Compass className="w-4 h-4 text-[#FF9398]" />
-                <span>Transmisión en Vivo</span>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#FF9398] font-bold">
+                <Compass className="w-3.5 h-3.5" />
+                <span>Recientes</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-100 mt-1">
-                Novedades del Servidor Abierto
+              <h2 className="text-xl sm:text-2xl font-serif font-light text-stone-100 mt-0.5">
+                Novedades
               </h2>
             </div>
 
             <button
               onClick={() => navigate('/buscar')}
-              className="pill-btn outline text-xs sm:text-sm py-2 px-4 cursor-pointer font-bold"
+              className="pill-btn outline text-xs py-2 px-3 font-bold"
             >
-              <span>Ver Todo</span>
+              <span>Ver todo</span>
               <span className="arr">&rarr;</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
             {feedBooks.slice(0, 12).map((book) => (
               <BookCard
                 key={book.id}
