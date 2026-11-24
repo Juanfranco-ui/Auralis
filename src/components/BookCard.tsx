@@ -41,22 +41,8 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
     toggleFavorite(book);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onSelect(book);
-    }
-  };
-
   return (
-    <article
-      onClick={() => onSelect(book)}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      role="button"
-      aria-label={`Ver detalles de ${book.title} de ${authorName}`}
-      className="group relative flex flex-col bg-[#12100e] border border-stone-700/80 hover:border-[#FF9398] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/60 focus-visible:ring-2 focus-visible:ring-[#FF9398] focus-visible:outline-none max-w-sm sm:max-w-none mx-auto w-full"
-    >
+    <article className="group relative flex flex-col bg-[#12100e] border border-stone-700/80 hover:border-[#FF9398] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/60 max-w-sm sm:max-w-none mx-auto w-full">
       {/* Cover Image slot with accessible fallback */}
       <div className="relative aspect-[3/4] w-full bg-[#0a0908] overflow-hidden flex items-center justify-center">
         {coverUrl && !imageError ? (
@@ -88,9 +74,10 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
 
         {/* Favorite toggle button (44x44px touch target) */}
         <button
+          type="button"
           onClick={handleFavoriteClick}
           aria-label={isFav ? `Quitar ${book.title} de favoritos` : `Guardar ${book.title} en favoritos`}
-          className={`absolute top-2.5 right-2.5 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-[#FF9398] ${
+          className={`absolute top-2.5 right-2.5 z-10 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-[#FF9398] ${
             isFav
               ? 'bg-[#FF9398] text-stone-950 shadow-lg'
               : 'bg-stone-950/80 text-stone-200 hover:text-white hover:bg-stone-900 border border-stone-700/60'
@@ -100,11 +87,12 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
         </button>
 
         {/* Floating Quick Play Overlay */}
-        <div className="absolute inset-0 bg-stone-950/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 bg-stone-950/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
           <button
+            type="button"
             onClick={handlePlayClick}
             aria-label={isCurrentBook && isPlaying ? `Pausar ${book.title}` : `Reproducir ${book.title}`}
-            className="pointer-events-auto w-14 h-14 rounded-full bg-[#FF9398] text-stone-950 flex items-center justify-center shadow-2xl transform group-hover:scale-105 active:scale-95 transition-all hover:bg-white font-bold"
+            className="pointer-events-auto relative z-10 w-14 h-14 rounded-full bg-[#FF9398] text-stone-950 flex items-center justify-center shadow-2xl transform group-hover:scale-105 active:scale-95 transition-all hover:bg-white font-bold focus-visible:ring-2 focus-visible:ring-white"
           >
             {isCurrentBook && isPlaying ? (
               <Pause className="w-6 h-6 fill-current" />
@@ -116,7 +104,7 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
 
         {/* Active playing indicator badge */}
         {isCurrentBook && isPlaying && (
-          <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 px-3 py-1 bg-stone-950/95 backdrop-blur-md border border-[#FF9398] rounded-full text-[#FF9398] text-xs font-mono font-bold tracking-wider uppercase shadow-md">
+          <div className="absolute bottom-2.5 left-2.5 z-10 pointer-events-none flex items-center gap-1.5 px-3 py-1 bg-stone-950/95 backdrop-blur-md border border-[#FF9398] rounded-full text-[#FF9398] text-xs font-mono font-bold tracking-wider uppercase shadow-md">
             <Disc3 className="w-3.5 h-3.5 animate-spin" />
             <span>Sonando</span>
           </div>
@@ -127,7 +115,13 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onSelect }) => {
       <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-[#12100e]">
         <div>
           <h3 className="font-serif font-medium text-stone-100 text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-[#FF9398] transition-colors">
-            {book.title}
+            <button
+              type="button"
+              onClick={() => onSelect(book)}
+              className="text-left text-inherit font-inherit cursor-pointer focus:outline-none focus-visible:underline after:absolute after:inset-0 after:content-['']"
+            >
+              {book.title}
+            </button>
           </h3>
           <p className="text-xs text-stone-300 font-sans mt-0.5 line-clamp-1">
             {authorName}
