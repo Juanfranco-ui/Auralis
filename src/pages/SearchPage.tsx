@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { BookCard } from '../components/BookCard';
@@ -14,14 +14,22 @@ export const SearchPage: React.FC = () => {
   const { openBookDetail } = useAudioPlayer();
 
   const queryParam = searchParams.get('q') || '';
-  const langParam = (searchParams.get('lang') as any) || 'all';
-  const typeParam = (searchParams.get('type') as any) || 'all';
+  const rawLang = searchParams.get('lang');
+  const langParam: SearchFilters['language'] =
+    rawLang === 'Spanish' || rawLang === 'English' ? rawLang : 'all';
+  const rawType = searchParams.get('type');
+  const typeParam: SearchFilters['searchType'] =
+    rawType === 'title' || rawType === 'author' ? rawType : 'all';
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    query: queryParam,
-    searchType: typeParam,
-    language: langParam,
-  });
+  const currentFilters = useMemo<SearchFilters>(
+    () => ({
+      query: queryParam,
+      searchType: typeParam,
+      language: langParam,
+    }),
+    [queryParam, typeParam, langParam]
+  );
+
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(Boolean(queryParam.trim()));
@@ -32,56 +40,64 @@ export const SearchPage: React.FC = () => {
     fetchFeaturedBooks().then((books) => setFeaturedBooks(books));
   }, []);
 
-  // Sync state if URL query param changes
+  // Single source of truth: URL query params trigger search
   useEffect(() => {
-    if (queryParam.trim()) {
-      const filters: SearchFilters = {
-        query: queryParam,
-        searchType: typeParam,
-        language: langParam,
-      };
-      setSearchFilters(filters);
-      executeSearch(filters);
-    }
-  }, [queryParam, langParam, typeParam]);
-
-  const executeSearch = async (filters: SearchFilters) => {
-    if (!filters.query.trim()) {
+    const trimmedQuery = queryParam.trim();
+    if (!trimmedQuery) {
       setSearchResults([]);
       setHasSearched(false);
+      setIsSearching(false);
       return;
     }
 
+    const controller = new AbortController();
+    const filters: SearchFilters = {
+      query: trimmedQuery,
+      searchType: typeParam,
+      language: langParam,
+    };
+
     setIsSearching(true);
     setHasSearched(true);
-    try {
-      const results = await searchAudiobooks(filters);
-      setSearchResults(results);
-    } catch (err) {
-      console.error('Search error:', err);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+
+    searchAudiobooks(filters, controller.signal)
+      .then((results) => {
+        if (!controller.signal.aborted) {
+          setSearchResults(results);
+        }
+      })
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err?.name === 'AbortError' || controller.signal.aborted) return;
+        console.error('Search error:', err);
+        setSearchResults([]);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setIsSearching(false);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [queryParam, langParam, typeParam]);
 
   const handlePerformSearch = (filters: SearchFilters) => {
-    setSearchFilters(filters);
     const newParams: Record<string, string> = {};
-    if (filters.query) newParams.q = filters.query;
+    const trimmed = filters.query.trim();
+    if (trimmed) newParams.q = trimmed;
     if (filters.language !== 'all') newParams.lang = filters.language;
     if (filters.searchType !== 'all') newParams.type = filters.searchType;
     setSearchParams(newParams);
-    executeSearch(filters);
   };
 
   const handleQuickTagClick = (tagQuery: string) => {
-    const filters: SearchFilters = {
+    handlePerformSearch({
       query: tagQuery,
       searchType: 'all',
       language: 'all',
-    };
-    handlePerformSearch(filters);
+    });
   };
 
   // Filter curated collection when not searching
@@ -93,8 +109,8 @@ export const SearchPage: React.FC = () => {
     return Boolean(book.categories?.includes(activeCategory));
   });
 
-  const pageTitle = searchFilters.query.trim()
-    ? `Búsqueda: "${searchFilters.query}" · Auralis Audiolibros`
+  const pageTitle = queryParam.trim()
+    ? `Búsqueda: "${queryParam}" · Auralis Audiolibros`
     : 'Buscador del Archivo LibriVox · Auralis';
 
   const quickPills = [
@@ -129,7 +145,7 @@ export const SearchPage: React.FC = () => {
       </div>
 
       <SearchBar
-        filters={searchFilters}
+        filters={currentFilters}
         onSearch={handlePerformSearch}
         isLoading={isSearching}
         totalResults={hasSearched ? searchResults.length : undefined}
@@ -161,15 +177,10 @@ export const SearchPage: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between text-xs sm:text-sm font-mono text-stone-300 border-b border-stone-800 pb-3 font-medium">
               <span>
-                Resultados para <strong className="text-white font-bold">&ldquo;{searchFilters.query}&rdquo;</strong> ({searchResults.length} encontrados)
+                Resultados para <strong className="text-white font-bold">&ldquo;{queryParam}&rdquo;</strong> ({searchResults.length} encontrados)
               </span>
               <button
-                onClick={() => {
-                  setSearchParams({});
-                  setSearchFilters({ query: '', searchType: 'all', language: 'all' });
-                  setHasSearched(false);
-                  setSearchResults([]);
-                }}
+                onClick={() => setSearchParams({})}
                 className="text-[#FF9398] font-bold hover:underline"
               >
                 Limpiar búsqueda
@@ -190,7 +201,7 @@ export const SearchPage: React.FC = () => {
           <div className="text-center py-20 bg-[#12100e] rounded-3xl p-8 space-y-3 max-w-md mx-auto">
             <SearchIcon className="w-10 h-10 mx-auto text-stone-500" />
             <h3 className="text-lg font-serif font-medium text-stone-100">
-              Sin coincidencias para &ldquo;{searchFilters.query}&rdquo;
+              Sin coincidencias para &ldquo;{queryParam}&rdquo;
             </h3>
             <p className="text-sm text-stone-300 font-sans leading-relaxed">
               Prueba buscando por apellido (ej: Cervantes, Quiroga, Bécquer, Doyle, Poe, Verne, Kafka) o un término temático general.

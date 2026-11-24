@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, X, SlidersHorizontal, ArrowRight, Loader2 } from 'lucide-react';
 import { SearchFilters } from '../types/audiobook';
 
@@ -31,6 +31,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const [searchType, setSearchType] = useState<SearchFilters['searchType']>(filters.searchType);
   const [language, setLanguage] = useState<SearchFilters['language']>(filters.language);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    setLocalQuery(filters.query);
+    setSearchType(filters.searchType);
+    setLanguage(filters.language);
+  }, [filters.query, filters.searchType, filters.language]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();

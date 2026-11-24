@@ -1008,7 +1008,10 @@ export async function fetchAudiobooksFeed(
 }
 
 // 3. Search Audiobooks (hybrid multi-source search)
-export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> {
+export async function searchAudiobooks(
+  filters: SearchFilters,
+  _signal?: AbortSignal
+): Promise<Book[]> {
   const q = filters.query.trim();
   if (!q) return [];
 
