@@ -312,7 +312,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La obra cumbre de la literatura universal en español. Las hilarantes y conmovedoras aventuras del hidalgo Don Quijote y su fiel escudero Sancho Panza por las tierras de La Mancha.',
     coverart_jpg: 'https://archive.org/services/img/don_quijote_vol1_0706_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/don_quijote_vol1_0706_librivox',
-    category: 'spanish',
+    categories: ['classics'],
   },
   {
     id: 'ia_cuentosquiroga_1312_librivox',
@@ -327,7 +327,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La obra cumbre del maestro rioplatense del relato breve y de horror psicológico. Incluye piezas maestras como "El almohadón de plumas", "A la deriva", "La gallina degollada" y "Los buques suicidantes".',
     coverart_jpg: 'https://archive.org/services/img/cuentosquiroga_1312_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/cuentosquiroga_1312_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
   {
     id: 'ia_leyendas_becquer_1208_librivox',
@@ -342,7 +342,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Las leyendas misteriosas, góticas y fantásticas del gran maestro del romanticismo español: El monte de las ánimas, El rayo de luna, Los ojos verdes, Creed en Dios y El Cristo de la calavera.',
     coverart_jpg: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/leyendas_becquer_1208_librivox',
-    category: 'mystery',
+    categories: ['mystery'],
   },
   {
     id: 'ia_rimas_1810_librivox',
@@ -357,7 +357,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La célebre colección de poemas románticos de Gustavo Adolfo Bécquer. Versos inmortales sobre la creación poética, la ilusión amorosa, el desengaño y el misterio de la soledad.',
     coverart_jpg: 'https://archive.org/services/img/rimas_1810_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/rimas_1810_librivox',
-    category: 'poetry',
+    categories: ['poetry'],
   },
   {
     id: 'ia_cuentosdelaselva_1603_librivox',
@@ -372,7 +372,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Fábulas memorables ambientadas en la selva misionera: La tortuga gigante, Las medias de los flamencos, El paso del Yabebirí, La guerra de los yacarés y La abeja haragana.',
     coverart_jpg: 'https://archive.org/services/img/cuentosdelaselva_1603_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/cuentosdelaselva_1603_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
   {
     id: 'ia_lametamorfosis_2101_librivox',
@@ -387,7 +387,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Al despertar una mañana tras un sueño intranquilo, Gregorio Samsa se encontró sobre su cama convertido en un monstruoso insecto. Clásico supremo del existencialismo y la alienación humana.',
     coverart_jpg: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/lametamorfosis_2101_librivox',
-    category: 'classics',
+    categories: ['classics','scifi'],
   },
   {
     id: 'ia_novelas_y_cuentos_1711_librivox',
@@ -402,7 +402,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Los relatos más escalofriantes de Edgar Allan Poe traducidos al castellano: El gato negro, El corazón delator, El pozo y el péndulo, La caída de la Casa Usher y La máscara de la muerte roja.',
     coverart_jpg: 'https://archive.org/services/img/novelas_y_cuentos_1711_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/novelas_y_cuentos_1711_librivox',
-    category: 'mystery',
+    categories: ['mystery','tales'],
   },
   {
     id: 'ia_aventurasde_arturogordonpym_1812_librivox',
@@ -417,7 +417,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La única novela de Edgar Allan Poe: un polizón a bordo del bergantín Grampus vive motines, canibalismo y encuentros con misterios sobrenaturales en los límites helados de la Antártida.',
     coverart_jpg: 'https://archive.org/services/img/aventurasde_arturogordonpym_1812_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/aventurasde_arturogordonpym_1812_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_20000leguas_1602_librivox',
@@ -432,7 +432,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'El biólogo marino Pierre Aronnax, su sirviente Conseil y el arponero Ned Land viajan a bordo del fabuloso submarino Nautilus capitaneado por el misterioso Capitán Nemo.',
     coverart_jpg: 'https://archive.org/services/img/20000leguas_1602_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/20000leguas_1602_librivox',
-    category: 'adventure',
+    categories: ['adventure','scifi'],
   },
   {
     id: 'ia_lavueltaalmundoenochentadias_1504_librivox',
@@ -447,7 +447,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'El flemático caballero británico Phileas Fogg y su mayordomo Jean Passepartout emprenden una carrera contra el reloj para circunvalar el planeta tras una audaz apuesta.',
     coverart_jpg: 'https://archive.org/services/img/lavueltaalmundoenochentadias_1504_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/lavueltaalmundoenochentadias_1504_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_la_odisea_1501_librivox',
@@ -462,7 +462,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'El poema épico fundacional de la cultura occidental: el largo y peligroso regreso de Ulises (Odiseo) a su hogar en Ítaca tras la Guerra de Troya, sorteando peligros míticos.',
     coverart_jpg: 'https://archive.org/services/img/la_odisea_1501_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/la_odisea_1501_librivox',
-    category: 'classics',
+    categories: ['classics','adventure'],
   },
   {
     id: 'ia_isladeltesoro_1509_librivox',
@@ -477,7 +477,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La cumbre de las novelas de piratas y aventuras. El joven Jim Hawkins descubre el mapa del tesoro del Capitán Flint y zarpa en La Española junto al carismático Long John Silver.',
     coverart_jpg: 'https://archive.org/services/img/isladeltesoro_1509_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/isladeltesoro_1509_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_sabuesodelosbaskerville_1512_librivox',
@@ -492,7 +492,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Sherlock Holmes y el doctor Watson investigan la misteriosa muerte de Sir Charles Baskerville y la leyenda de un sabueso fantasmal en los tenebrosos páramos de Dartmoor.',
     coverart_jpg: 'https://archive.org/services/img/sabuesodelosbaskerville_1512_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/sabuesodelosbaskerville_1512_librivox',
-    category: 'mystery',
+    categories: ['mystery'],
   },
   {
     id: 'ia_novelas_ejemplares_1110_librivox',
@@ -507,7 +507,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Colección magistral de relatos del Siglo de Oro español: Rinconete y Cortadillo, La gitanilla, El licenciado Vidriera, El celoso extremeño y La ilustre fregona.',
     coverart_jpg: 'https://archive.org/services/img/novelas_ejemplares_1110_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/novelas_ejemplares_1110_librivox',
-    category: 'spanish',
+    categories: ['classics','tales'],
   },
   {
     id: 'ia_lazarillo_0912_librivox',
@@ -522,7 +522,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La obra fundadora de la novela picaresca. La agudeza, ingenio y picardía de Lázaro para sobrevivir sirviendo a un ciego, un clérigo avaro y un hidalgo arruinado.',
     coverart_jpg: 'https://archive.org/services/img/lazarillo_0912_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/lazarillo_0912_librivox',
-    category: 'spanish',
+    categories: ['classics'],
   },
   {
     id: 'ia_cuentos_grimm_01_1109_librivox',
@@ -537,7 +537,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Los cuentos populares europeos inmortalizados por los Hermanos Grimm, narrados con calidez y fidelidad a las tradiciones orales centenarias.',
     coverart_jpg: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/cuentos_grimm_01_1109_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
   {
     id: 'ia_antologia_de_cuentos_fantasticos_1905_librivox',
@@ -552,7 +552,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Selección de relatos sobrenaturales, insólitos y de misterio gótico de destacados escritores de la literatura hispana y universal.',
     coverart_jpg: 'https://archive.org/services/img/antologia_de_cuentos_fantasticos_1905_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/antologia_de_cuentos_fantasticos_1905_librivox',
-    category: 'mystery',
+    categories: ['mystery','tales'],
   },
   {
     id: 'ia_abelsanchez_1904_librivox',
@@ -567,7 +567,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La penetrante exploración unamuniana de la envidia fraternal, el dolor existencial y la psicología humana a través de la tormentosa amistad entre Joaquín Monegro y Abel Sánchez.',
     coverart_jpg: 'https://archive.org/services/img/abelsanchez_1904_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/abelsanchez_1904_librivox',
-    category: 'spanish',
+    categories: ['classics'],
   },
   {
     id: 'ia_trafalgar_0909_librivox',
@@ -582,7 +582,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'El brillante inicio de los Episodios Nacionales: el joven Gabriel Araceli narra en primera persona la heroica y desgarradora batalla naval del Cabo Trafalgar en 1805.',
     coverart_jpg: 'https://archive.org/services/img/trafalgar_0909_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/trafalgar_0909_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_viajesdegulliver_1705_librivox',
@@ -597,7 +597,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La afilada y divertida sátira universal de Jonathan Swift en español: Lemuel Gulliver visita las diminutas tierras de Liliput, a los gigantes de Brobdingnag y mundos fantásticos.',
     coverart_jpg: 'https://archive.org/services/img/viajesdegulliver_1705_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/viajesdegulliver_1705_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_canasybarro_1703_librivox',
@@ -612,7 +612,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La obra cumbre del naturalismo valenciano: la lucha por la tierra, las pasiones prohibidas y el destino campesino en los paisajes salvajes de La Albufera.',
     coverart_jpg: 'https://archive.org/services/img/canasybarro_1703_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/canasybarro_1703_librivox',
-    category: 'spanish',
+    categories: ['classics'],
   },
   {
     id: 'ia_condenada_1107_librivox',
@@ -627,7 +627,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Relatos vibrantes y trágicos sobre las gentes humildes, el mar y la huerta española, narrados con la inigualable potencia plástica de Blasco Ibáñez.',
     coverart_jpg: 'https://archive.org/services/img/condenada_1107_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/condenada_1107_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
   {
     id: 'ia_edad_de_oro_1001_librivox',
@@ -642,7 +642,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'La emblemática obra de José Martí dedicada a los niños y jóvenes de América. Textos de bondad, pensamiento crítico, historia y fábulas poéticas inmortales.',
     coverart_jpg: 'https://archive.org/services/img/edad_de_oro_1001_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/edad_de_oro_1001_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
   {
     id: 'ia_capitan_veneno_1002_librivox',
@@ -657,7 +657,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Encantadora comedia romántica del huraño y cascarrabias militar don Jorge de Córdoba, cuya hosquedad se desarma ante los tiernos cuidados de la bondadosa Angustias.',
     coverart_jpg: 'https://archive.org/services/img/capitan_veneno_1002_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/capitan_veneno_1002_librivox',
-    category: 'spanish',
+    categories: ['classics'],
   },
   {
     id: 'ia_100mejorespoesias_1502_librivox',
@@ -672,7 +672,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Antología poética canónica: Manrique, Garcilaso, San Juan de la Cruz, Fray Luis de León, Lope de Vega, Góngora, Quevedo, Espronceda y Zorrilla en lecturas líricas.',
     coverart_jpg: 'https://archive.org/services/img/100mejorespoesias_1502_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/100mejorespoesias_1502_librivox',
-    category: 'poetry',
+    categories: ['poetry'],
   },
   {
     id: 'ia_simplemente_dario_0810_librivox',
@@ -687,7 +687,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Poemas inmortales del genio modernista nicaragüense. Sonoridad, ritmo y belleza deslumbrante en Azul..., Prosas profanas y Cantos de vida y esperanza.',
     coverart_jpg: 'https://archive.org/services/img/simplemente_dario_0810_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/simplemente_dario_0810_librivox',
-    category: 'poetry',
+    categories: ['poetry'],
   },
   {
     id: 'ia_naufragios_1308_librivox',
@@ -702,7 +702,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Impresionante crónica histórica y testimonio de supervivencia: Cabeza de Vaca y tres compañeros cruzan a pie durante ocho años el desconocido continente norteamericano.',
     coverart_jpg: 'https://archive.org/services/img/naufragios_1308_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/naufragios_1308_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
 
   // --- ENGLISH & UNIVERSAL CLASSICS ---
@@ -719,7 +719,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'The quintessential Gothic epistolary vampire novel. Jonathan Harker journeys to Castle Dracula in Transylvania, unwittingly unleashing an immortal nightmare upon England.',
     coverart_jpg: 'https://archive.org/services/img/dracula_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/dracula_librivox',
-    category: 'mystery',
+    categories: ['mystery'],
   },
   {
     id: 'ia_adventures_holmes',
@@ -734,7 +734,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Twelve legendary cases of consulting detective Sherlock Holmes and Dr. John Watson, including A Scandal in Bohemia, The Red-Headed League and The Speckled Band.',
     coverart_jpg: 'https://archive.org/services/img/adventures_holmes',
     coverart_thumbnail: 'https://archive.org/services/img/adventures_holmes',
-    category: 'mystery',
+    categories: ['mystery'],
   },
   {
     id: 'ia_count_monte_cristo_0711_librivox',
@@ -749,7 +749,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'The supreme epic of betrayal, injustice, escape from the Château d\'If, and Edmond Dantès\' calculated retribution across Parisian high society.',
     coverart_jpg: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/count_monte_cristo_0711_librivox',
-    category: 'adventure',
+    categories: ['adventure'],
   },
   {
     id: 'ia_frankenstein_cs_librivox',
@@ -764,7 +764,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Victor Frankenstein unlocks the secret of animation and creates a sapient creature from human remains, unleashing a tragedy of hubris, loneliness and revenge.',
     coverart_jpg: 'https://archive.org/services/img/frankenstein_cs_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/frankenstein_cs_librivox',
-    category: 'classics',
+    categories: ['classics','mystery','scifi'],
   },
   {
     id: 'ia_dorian_gray_librivox',
@@ -779,7 +779,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Oscar Wilde\'s brilliant philosophical story of aestheticism, moral decay, and a portrait in the attic that ages and bears the scars of Dorian\'s secret sins.',
     coverart_jpg: 'https://archive.org/services/img/dorian_gray_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/dorian_gray_librivox',
-    category: 'classics',
+    categories: ['classics'],
   },
   {
     id: 'ia_time_machine_0805_librivox',
@@ -794,7 +794,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'The foundational science fiction story. A Victorian Time Traveller travels to the year 802,701 AD to discover humanity divided into the Eloi and subterranean Morlocks.',
     coverart_jpg: 'https://archive.org/services/img/time_machine_0805_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/time_machine_0805_librivox',
-    category: 'scifi',
+    categories: ['scifi'],
   },
   {
     id: 'ia_pride_and_prejudice_librivox',
@@ -809,7 +809,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Jane Austen\'s beloved masterpiece exploring manners, upbringing, morality, and the turbulent courtship between the quick-witted Elizabeth Bennet and Mr. Darcy.',
     coverart_jpg: 'https://archive.org/services/img/pride_and_prejudice_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/pride_and_prejudice_librivox',
-    category: 'classics',
+    categories: ['classics'],
   },
   {
     id: 'ia_jekyll_and_hyde_librivox',
@@ -824,7 +824,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'The archetypal study of duality in human nature: the respectable Dr. Henry Jekyll creates a potion that liberates his dark, uninhibited alter ego Mr. Edward Hyde.',
     coverart_jpg: 'https://archive.org/services/img/jekyll_and_hyde_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/jekyll_and_hyde_librivox',
-    category: 'mystery',
+    categories: ['mystery'],
   },
   {
     id: 'ia_canterville_ghost_librivox',
@@ -839,7 +839,7 @@ export const CURATED_FEATURED_BOOKS: Book[] = [
       'Oscar Wilde\'s delightfully amusing tale of a centuries-old English ghost outwitted and exasperated by a thoroughly modern American family.',
     coverart_jpg: 'https://archive.org/services/img/canterville_ghost_librivox',
     coverart_thumbnail: 'https://archive.org/services/img/canterville_ghost_librivox',
-    category: 'tales',
+    categories: ['tales'],
   },
 ];
 

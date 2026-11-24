@@ -4,6 +4,7 @@ import { HeroSection } from '../components/HeroSection';
 import { BookCard } from '../components/BookCard';
 import { SeoHead } from '../components/SeoHead';
 import { Book } from '../types/audiobook';
+import { CATEGORIES } from '../data/categories';
 import { fetchFeaturedBooks, fetchAudiobooksFeed, getAuthorName } from '../services/librivoxApi';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import { Sparkles, Compass, Loader2, Search, X, ChevronDown, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
@@ -69,41 +70,15 @@ export const CatalogPage: React.FC = () => {
   const filteredFeaturedBooks = useMemo(() => {
     return featuredBooks.filter((book) => {
       // 1. Language Filter
-      const isSpanish = book.language?.toLowerCase().includes('span') || (book as any).category === 'spanish';
+      const isSpanish = Boolean(book.language?.toLowerCase().includes('span'));
       if (languageFilter === 'es' && !isSpanish) return false;
       if (languageFilter === 'en' && isSpanish) return false;
 
       // 2. Category Filter
-      if (exploreCategory === 'spanish' && !isSpanish) return false;
-      if (exploreCategory === 'mystery') {
-        const cat = (book as any).category;
-        const matches = cat === 'mystery' || book.id.includes('baskerville') || book.id.includes('leyendas') || book.id.includes('poe') || book.id.includes('dracula') || book.id.includes('frankenstein');
-        if (!matches) return false;
-      }
-      if (exploreCategory === 'tales') {
-        const cat = (book as any).category;
-        const matches = cat === 'tales' || book.title.toLowerCase().includes('cuento') || book.title.toLowerCase().includes('relato') || book.id.includes('quiroga') || book.id.includes('grimm');
-        if (!matches) return false;
-      }
-      if (exploreCategory === 'adventure') {
-        const cat = (book as any).category;
-        const matches = cat === 'adventure' || book.title.toLowerCase().includes('viaje') || book.title.toLowerCase().includes('isla') || book.id.includes('odisea') || book.id.includes('verne') || book.id.includes('monte_cristo');
-        if (!matches) return false;
-      }
-      if (exploreCategory === 'classics') {
-        const cat = (book as any).category;
-        const matches = cat === 'classics' || book.id.includes('quijote') || book.id.includes('odisea') || book.id.includes('lazarillo') || book.id.includes('pride') || book.id.includes('dorian');
-        if (!matches) return false;
-      }
-      if (exploreCategory === 'poetry') {
-        const cat = (book as any).category;
-        const matches = cat === 'poetry' || book.id.includes('rimas') || book.id.includes('poesia') || book.id.includes('dario');
-        if (!matches) return false;
-      }
-      if (exploreCategory === 'scifi') {
-        const cat = (book as any).category;
-        const matches = cat === 'scifi' || book.id.includes('time_machine') || book.id.includes('metamorfosis') || book.id.includes('20000leguas') || book.id.includes('frankenstein');
-        if (!matches) return false;
+      if (exploreCategory === 'spanish') {
+        if (!isSpanish) return false;
+      } else if (exploreCategory !== 'all') {
+        if (!book.categories?.includes(exploreCategory)) return false;
       }
 
       // 3. In-catalog search query filter
@@ -257,16 +232,7 @@ export const CatalogPage: React.FC = () => {
             role="tablist"
             aria-label="Categorías de audiolibros"
           >
-            {[
-              { id: 'all', label: 'Todas las historias' },
-              { id: 'spanish', label: 'En Español' },
-              { id: 'tales', label: 'Cuentos & Relatos' },
-              { id: 'mystery', label: 'Misterio & Terror' },
-              { id: 'adventure', label: 'Aventura' },
-              { id: 'classics', label: 'Clásicos' },
-              { id: 'poetry', label: 'Poesía & Lírica' },
-              { id: 'scifi', label: 'Ciencia Ficción' },
-            ].map((cat) => (
+            {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => {

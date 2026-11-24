@@ -48,7 +48,7 @@ export interface Book {
   coverart_thumbnail?: string;
   coverart_pdf?: string;
   identifier?: string;
-  category?: string;
+  categories?: string[];
 }
 
 export interface Bookmark {

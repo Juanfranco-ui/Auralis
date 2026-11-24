@@ -11,17 +11,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   return (
     <section className="relative overflow-hidden border-b border-stone-800 bg-[#0c0a09]">
-      {/* Background imagery with measured cinematic scrim */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="/images/hero_audiobook_curation.jpg"
-          alt="Biblioteca y audífonos clásicos"
-          className="w-full h-full object-cover object-center opacity-20 filter grayscale contrast-125"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a09] via-[#0c0a09]/90 to-[#0c0a09]/70" />
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="max-w-2xl space-y-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-100 tracking-tight leading-[1.1] text-balance">
@@ -39,6 +28,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             >
               <span>Explorar</span>
               <span className="arr">&rarr;</span>
+            </button>
+            <button
+              onClick={() => onExploreGenre('mystery')}
+              className="px-3.5 py-1.5 bg-[#12100e] border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full transition-all text-xs font-mono font-medium"
+            >
+              Misterio
+            </button>
+            <button
+              onClick={() => onExploreGenre('adventure')}
+              className="px-3.5 py-1.5 bg-[#12100e] border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full transition-all text-xs font-mono font-medium"
+            >
+              Aventura
+            </button>
+            <button
+              onClick={() => onExploreGenre('poetry')}
+              className="px-3.5 py-1.5 bg-[#12100e] border border-stone-700 hover:border-[#FF9398] text-stone-200 hover:text-white rounded-full transition-all text-xs font-mono font-medium"
+            >
+              Poesía
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { SearchBar } from '../components/SearchBar';
 import { BookCard } from '../components/BookCard';
 import { SeoHead } from '../components/SeoHead';
 import { Book, SearchFilters } from '../types/audiobook';
+import { CATEGORIES } from '../data/categories';
 import { searchAudiobooks, fetchFeaturedBooks } from '../services/librivoxApi';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import { Search as SearchIcon, Loader2, Sparkles } from 'lucide-react';
@@ -87,18 +88,9 @@ export const SearchPage: React.FC = () => {
   const filteredCurated = featuredBooks.filter((book) => {
     if (activeCategory === 'all') return true;
     if (activeCategory === 'spanish') {
-      return book.language?.toLowerCase().includes('span') || (book as any).category === 'spanish';
+      return Boolean(book.language?.toLowerCase().includes('span'));
     }
-    if (activeCategory === 'mystery') {
-      return (book as any).category === 'mystery' || book.id.includes('dracula') || book.id.includes('baskerville');
-    }
-    if (activeCategory === 'tales') {
-      return (book as any).category === 'tales' || book.title.toLowerCase().includes('cuento');
-    }
-    if (activeCategory === 'adventure') {
-      return (book as any).category === 'adventure';
-    }
-    return true;
+    return Boolean(book.categories?.includes(activeCategory));
   });
 
   const pageTitle = searchFilters.query.trim()
@@ -215,13 +207,7 @@ export const SearchPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto text-xs sm:text-sm font-mono">
-              {[
-                { id: 'all', label: 'Todas' },
-                { id: 'spanish', label: 'En Español' },
-                { id: 'tales', label: 'Cuentos' },
-                { id: 'mystery', label: 'Misterio' },
-                { id: 'adventure', label: 'Aventura' },
-              ].map((c) => (
+              {CATEGORIES.map((c) => (
                 <button
                   key={c.id}
                   onClick={() => setActiveCategory(c.id)}
