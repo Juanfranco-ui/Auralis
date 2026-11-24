@@ -950,17 +950,19 @@ async function fetchChaptersFromArchive(identifier: string, existingBook?: Parti
 
 // 1. Fetch Featured Books
 export async function fetchFeaturedBooks(): Promise<Book[]> {
-  try {
-    const res = await fetch('/api/featured');
-    const contentType = res.headers.get('content-type') || '';
-    if (res.ok && contentType.includes('application/json')) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        return data;
+  if (import.meta.env.DEV) {
+    try {
+      const res = await fetch('/api/featured');
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          return data;
+        }
       }
+    } catch (err) {
+      console.warn('Backend /api/featured unavailable, using curated books:', err);
     }
-  } catch (err) {
-    console.warn('Backend /api/featured unavailable, using curated books:', err);
   }
 
   // Standalone / Netlify client-side fallback
@@ -1017,18 +1019,20 @@ export async function searchAudiobooks(filters: SearchFilters): Promise<Book[]> 
     limit: '30',
   });
 
-  // Try backend search endpoint first if available (Node/Express runtime)
-  try {
-    const res = await fetch(`/api/search?${params.toString()}`);
-    const contentType = res.headers.get('content-type') || '';
-    if (res.ok && contentType.includes('application/json')) {
-      const data = await res.json();
-      if (Array.isArray(data.books) && data.books.length > 0) {
-        return data.books;
+  // Try backend search endpoint first if available in local development (Node/Express runtime)
+  if (import.meta.env.DEV) {
+    try {
+      const res = await fetch(`/api/search?${params.toString()}`);
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (Array.isArray(data.books) && data.books.length > 0) {
+          return data.books;
+        }
       }
+    } catch {
+      // Proceed to client multi-search
     }
-  } catch {
-    // Proceed to client multi-search
   }
 
   const results: Book[] = [];
@@ -1199,24 +1203,26 @@ export async function fetchBookDetails(bookId: string, currentBook?: Book): Prom
     }
   }
 
-  // 1. Try full-stack backend endpoint if available (only if it returns real JSON)
-  try {
-    const res = await fetch(`/api/book/${encodeURIComponent(bookId)}`);
-    const contentType = res.headers.get('content-type') || '';
-    if (res.ok && contentType.includes('application/json')) {
-      const book = await res.json();
-      if (book && Array.isArray(book.sections) && book.sections.length > 0) {
-        return {
-          ...book,
-          sections: book.sections.map((s: any) => ({
-            ...s,
-            listen_url: normalizeAudioUrl(s.listen_url),
-          })),
-        };
+  // 1. Try full-stack backend endpoint if available in local development (only if it returns real JSON)
+  if (import.meta.env.DEV) {
+    try {
+      const res = await fetch(`/api/book/${encodeURIComponent(bookId)}`);
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const book = await res.json();
+        if (book && Array.isArray(book.sections) && book.sections.length > 0) {
+          return {
+            ...book,
+            sections: book.sections.map((s: any) => ({
+              ...s,
+              listen_url: normalizeAudioUrl(s.listen_url),
+            })),
+          };
+        }
       }
+    } catch {
+      // Backend endpoint not available (e.g. static Netlify SPA), proceed to client resolvers
     }
-  } catch {
-    // Backend endpoint not available (e.g. static Netlify SPA), proceed to client resolvers
   }
 
   // 2. If it is an Internet Archive item (has ia_ prefix, identifier, or non-numeric id)

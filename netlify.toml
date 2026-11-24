@@ -3,15 +3,21 @@
   publish = "dist"
 
 [[redirects]]
+  from = "/api/feed/audiobooks"
+  to = "https://librivox.org/api/feed/audiobooks/"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/feed/audiobooks/*"
   to = "https://librivox.org/api/feed/audiobooks/:splat"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/api/feed/audiobooks"
-  to = "https://librivox.org/api/feed/audiobooks/:splat"
-  status = 200
+  from = "/api/*"
+  to = "/404"
+  status = 404
   force = true
 
 [[redirects]]

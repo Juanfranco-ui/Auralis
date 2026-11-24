@@ -1,3 +1,0 @@
-/api/feed/audiobooks/*  https://librivox.org/api/feed/audiobooks/:splat  200!
-/api/feed/audiobooks  https://librivox.org/api/feed/audiobooks/:splat  200!
-/*  /index.html  200
